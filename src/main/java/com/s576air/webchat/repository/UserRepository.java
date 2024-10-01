@@ -13,18 +13,18 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insertUser(Long id, String name) {
+    public void insertUser(String id, String name) {
         String sql = "INSERT INTO users (id, name) VALUES (?, ?)";
         jdbcTemplate.update(sql, id, name);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         String sql = "DELETE FROM users WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 
-    public void findById(Long id) {
-        String sql = "SELECT id FROM users WHERE id = ?";
+    public void findById(String id) {
+        String sql = "SELECT id, password_hash, password_salt FROM users WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 
