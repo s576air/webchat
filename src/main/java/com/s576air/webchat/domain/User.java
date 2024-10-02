@@ -21,6 +21,10 @@ public class User {
         this.id = id;
     }
 
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
     public void setPassword(String password) {
         passwordHash = PasswordUtil.hashPassword(password);
     }

@@ -1,8 +1,14 @@
 package com.s576air.webchat.repository;
 
+import com.s576air.webchat.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public class UserRepository {
@@ -13,9 +19,9 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insertUser(String id, String name) {
-        String sql = "INSERT INTO users (id, name) VALUES (?, ?)";
-        jdbcTemplate.update(sql, id, name);
+    public void insertUser(User user) {
+        String sql = "INSERT INTO users (id, password_hash, name) VALUES (?, ?, ?)";
+        jdbcTemplate.update(sql, user.getId(), user.getPasswordHash(), user.getName());
     }
 
     public void deleteUser(String id) {
@@ -23,9 +29,21 @@ public class UserRepository {
         jdbcTemplate.update(sql, id);
     }
 
-    public void findById(String id) {
-        String sql = "SELECT id, password_hash, password_salt FROM users WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+    public Optional<User> findById(String id) {
+        String sql = "SELECT id, password_hash, name FROM users WHERE id = ?";
+        try {
+            User user = jdbcTemplate.queryForObject(sql, userRowMapper(), id);
+            return Optional.ofNullable(user);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        } catch (IncorrectResultSizeDataAccessException e) {
+            System.err.println("Multiple users found with ID: " + id);
+            return Optional.empty();
+        }
+    }
+
+    private RowMapper<User> userRowMapper() {
+        return (rs, rowNum) -> new User(rs.getString("id"), rs.getString("password_hash"), rs.getString("name"));
     }
 
     void clear() {
