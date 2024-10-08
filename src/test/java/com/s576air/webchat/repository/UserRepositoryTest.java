@@ -2,26 +2,44 @@ package com.s576air.webchat.repository;
 
 
 import com.s576air.webchat.domain.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public class UserRepositoryTest {
-    UserRepository repository = new UserRepository(new JdbcTemplate());
+    JdbcTemplate jdbcTemplate;
+    UserRepository repository;
 
-    @AfterEach
-    public void afterEach() {
+    public UserRepositoryTest() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.h2.Driver");
+        dataSource.setUrl("jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1");
+        dataSource.setUsername("sa");
+        dataSource.setPassword("");
+
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        repository = new UserRepository(jdbcTemplate);
+    }
+
+    @BeforeEach
+    public void setUp() {
+        jdbcTemplate.execute(
+            "CREATE TABLE IF NOT EXISTS users (" +
+            "    id VARCHAR(16) PRIMARY KEY," +
+            "    password_hash VARCHAR(255)," +
+            "    name VARCHAR(255)" +
+            ");"
+        );
+
         repository.clear();
     }
 
     @Test
     public void test() {
-        repository.clear();
-
         User user1 = new User("first", "hashcode", "name");
         User user2 = new User("second", "password", "java");
 

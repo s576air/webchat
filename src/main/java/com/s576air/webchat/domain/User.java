@@ -41,5 +41,11 @@ public class User {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return id.equals(user.id) && passwordHash.equals(user.passwordHash) && name.equals(user.name);
+    }
 
 }
