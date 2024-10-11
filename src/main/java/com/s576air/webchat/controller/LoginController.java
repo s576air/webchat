@@ -11,17 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
     @GetMapping("/login")
     public String loginPage() {
-        System.out.println("login page");
         return "forward:/login.html";
-    }
-
-    @PostMapping("/login")
-    public String handleLogin(LoginForm loginForm) {
-        // 로그인 여부 확인 및 처리
-
-        // 로그인 성공시 톡방 페이지 반환
-        // 로그인 실패시 페이지 반환
-        return "redirect:/";
     }
 
     @GetMapping("/sign-up")
