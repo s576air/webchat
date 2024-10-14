@@ -29,6 +29,10 @@ public class User {
         passwordHash = PasswordUtil.hashPassword(password);
     }
 
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
     public boolean checkPassword(String password) {
         return PasswordUtil.checkPassword(password, this.passwordHash);
     }
