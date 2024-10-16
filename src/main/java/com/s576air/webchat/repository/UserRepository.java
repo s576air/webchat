@@ -43,7 +43,11 @@ public class UserRepository {
     }
 
     private RowMapper<User> userRowMapper() {
-        return (rs, rowNum) -> new User(rs.getString("id"), rs.getString("password_hash"), rs.getString("name"));
+        return (rs, rowNum) -> new User(
+            rs.getString("id"),
+            rs.getString("password_hash"),
+            rs.getString("name")
+        );
     }
 
     void clear() {

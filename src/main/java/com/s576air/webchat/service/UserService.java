@@ -16,20 +16,16 @@ public class UserService {
         this.repository = repository;
     }
 
-    public void login(String id, String password) {
-        // SQL 인젝션 공격이 가능한지 확인바람
-        Optional<User> optionalUser = repository.findById(id);
-
-        if (optionalUser.isEmpty()) {
-            return;
+    public boolean signUp(String id, String password) {
+        if (repository.findById(id).isPresent()) {
+            return false;
         }
+        User user = new User(id, "", "");
+        user.setPassword(password);
 
-        User user = optionalUser.get();
+        repository.insertUser(user);
 
-        if (PasswordUtil.checkPassword(password, user.getPasswordHash())) {
-            return;
-        } else {
-            return;
-        }
+        return true;
     }
+
 }
