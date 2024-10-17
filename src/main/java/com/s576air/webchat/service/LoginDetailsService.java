@@ -20,7 +20,7 @@ public class LoginDetailsService implements UserDetailsService {
                               .orElseThrow(() -> new UsernameNotFoundException("User (" + username + ") not found"));
 
         return User
-            .withUsername(user.getName())
+            .withUsername(user.getId())
             .password(user.getPasswordHash())
             .roles("USER")
             .build();

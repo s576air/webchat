@@ -51,6 +51,7 @@ public class UserRepositoryTest {
 
         Optional<User> repositoryUser1 = repository.findById(user1.getId());
         Assertions.assertEquals(Optional.of(user1), repositoryUser1);
+        repositoryUser1.ifPresent(user -> System.out.println(user.getId()));
 
         Optional<User> repositoryUser2 = repository.findById(user2.getId());
         Assertions.assertEquals(Optional.of(user2), repositoryUser2);

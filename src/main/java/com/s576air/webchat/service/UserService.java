@@ -5,8 +5,6 @@ import com.s576air.webchat.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserService {
     private final UserRepository repository;
@@ -20,7 +18,7 @@ public class UserService {
         if (repository.findById(id).isPresent()) {
             return false;
         }
-        User user = new User(id, "", "");
+        User user = new User(id, "", "default");
         user.setPassword(password);
 
         repository.insertUser(user);

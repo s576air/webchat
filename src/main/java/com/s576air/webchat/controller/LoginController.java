@@ -43,7 +43,7 @@ public class LoginController {
             return "sign-up";
         }
         if (userService.signUp(id, password)) {
-            return "redirect:/login";
+            return "redirect:/sign-up-success.html";
         } else {
             model.addAttribute("err", "이미 존재하는 아이디입니다.");
             return "sign-up";
