@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/home", true)) // 적절히 수정바람
+                .defaultSuccessUrl("/friend-list", true)) // 적절히 수정바람
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .invalidateHttpSession(true)

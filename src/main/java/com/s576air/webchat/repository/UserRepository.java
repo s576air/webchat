@@ -20,17 +20,17 @@ public class UserRepository {
     }
 
     public void insertUser(User user) {
-        String sql = "INSERT INTO users (id, password_hash, name) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO users (login_id, password_hash, name) VALUES (?, ?, ?)";
         jdbcTemplate.update(sql, user.getId(), user.getPasswordHash(), user.getName());
     }
 
     public void deleteUser(String id) {
-        String sql = "DELETE FROM users WHERE id = ?";
+        String sql = "DELETE FROM users WHERE login_id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     public Optional<User> findById(String id) {
-        String sql = "SELECT id, password_hash, name FROM users WHERE id = ?";
+        String sql = "SELECT login_id, password_hash, name FROM users WHERE id = ?";
         try {
             User user = jdbcTemplate.queryForObject(sql, userRowMapper(), id);
             return Optional.ofNullable(user);
@@ -44,7 +44,7 @@ public class UserRepository {
 
     private RowMapper<User> userRowMapper() {
         return (rs, rowNum) -> new User(
-            rs.getString("id"),
+            rs.getString("login_id"),
             rs.getString("password_hash"),
             rs.getString("name")
         );
