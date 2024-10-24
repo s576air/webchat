@@ -5,13 +5,13 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS chatroom {
+CREATE TABLE IF NOT EXISTS chatroom (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255)
-};
+);
 
-CREATE TABLE IF NOT EXISTS chatroom_participants {
-    chatroom_id BIGINT REFERENCES chatroom(chatroom_id) ON DELETE CASCADE,
+CREATE TABLE IF NOT EXISTS chatroom_participants (
+    chatroom_id BIGINT REFERENCES chatroom(id) ON DELETE CASCADE,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
     PRIMARY KEY (chatroom_id, user_id)
-};
+);

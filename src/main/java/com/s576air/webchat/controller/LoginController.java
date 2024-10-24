@@ -24,7 +24,7 @@ public class LoginController {
 
     @GetMapping("/sign-up")
     public String signUpPage() {
-        return "signUp";
+        return "sign-up";
     }
 
     @PostMapping("/sign-up")
