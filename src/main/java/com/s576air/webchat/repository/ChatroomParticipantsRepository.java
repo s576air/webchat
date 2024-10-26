@@ -15,6 +15,12 @@ public class ChatroomParticipantsRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public boolean insert(Long chatroomId, Long userId) {
+        String sql = "INSERT INTO chatroom_participants(chatroom_id, user_id) VALUES(?, ?)";
+        int updatedRows = jdbcTemplate.update(sql, chatroomId, userId);
+        return updatedRows >= 1;
+    }
+
     public List<Long> findChatroomListByUserId(Long id) {
         String sql = "SELECT chatroom_id FROM chatroom_participants WHERE user_id = ?";
         try {

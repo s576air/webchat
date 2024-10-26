@@ -19,14 +19,16 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insertUser(User user) {
+    public boolean insertUser(User user) {
         String sql = "INSERT INTO users (login_id, password_hash, name) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, user.getId(), user.getPasswordHash(), user.getName());
+        int updatedRows = jdbcTemplate.update(sql, user.getId(), user.getPasswordHash(), user.getName());
+        return updatedRows >= 1;
     }
 
-    public void deleteUser(String id) {
+    public boolean deleteUser(String id) {
         String sql = "DELETE FROM users WHERE login_id = ?";
-        jdbcTemplate.update(sql, id);
+        int updatedRows = jdbcTemplate.update(sql, id);
+        return updatedRows >= 1;
     }
 
     public Optional<User> findById(String id) {

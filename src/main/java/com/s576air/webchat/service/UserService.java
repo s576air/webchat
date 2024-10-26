@@ -21,9 +21,7 @@ public class UserService {
         User user = new User(id, "", "default");
         user.setPassword(password);
 
-        repository.insertUser(user);
-
-        return true;
+        return repository.insertUser(user);
     }
 
 }
