@@ -21,7 +21,7 @@ public class ChatroomParticipantsRepository {
         return updatedRows >= 1;
     }
 
-    public List<Long> findChatroomListByUserId(Long id) {
+    public List<Long> findChatroomIdListByUserId(Long id) {
         String sql = "SELECT chatroom_id FROM chatroom_participants WHERE user_id = ?";
         try {
             return jdbcTemplate.query(sql, ChatroomIdRowMapper(), id);

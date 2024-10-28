@@ -3,22 +3,32 @@ package com.s576air.webchat.domain;
 import com.s576air.webchat.service.PasswordUtil;
 
 public class User {
-    String id;
+    Long id;
+    String loginId;
     String passwordHash;
     String name;
 
-    public User(String id, String passwordHash, String name) {
+    public User(Long id, String loginId, String passwordHash, String name) {
         this.id = id;
+        this.loginId = loginId;
         this.passwordHash = passwordHash;
         this.name = name;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getLoginId() {
+        return loginId;
+    }
+
+    public void setLoginId(String loginId) {
+        this.loginId = loginId;
     }
 
     public String getPasswordHash() {

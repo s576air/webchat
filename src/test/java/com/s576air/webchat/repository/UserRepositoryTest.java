@@ -2,6 +2,7 @@ package com.s576air.webchat.repository;
 
 
 import com.s576air.webchat.domain.User;
+import com.s576air.webchat.service.PasswordUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,25 +41,25 @@ public class UserRepositoryTest {
 
     @Test
     public void test() {
-        User user1 = new User("first", "hashcode", "name");
-        User user2 = new User("second", "password", "java");
+        User user1 = new User(-1L, "first", "hashcode", "name");
+        User user2 = new User(-1L, "second", "password", "java");
 
-        Optional<User> nullUser1 = repository.findById(user1.getId());
+        Optional<User> nullUser1 = repository.findByLoginId(user1.getLoginId());
         Assertions.assertEquals(Optional.empty(), nullUser1);
 
-        repository.insertUser(user1);
-        repository.insertUser(user2);
+        repository.insertUser("first", PasswordUtil.hashPassword("hashcode"), "name");
+        repository.insertUser("second", PasswordUtil.hashPassword("password"), "java");
 
-        Optional<User> repositoryUser1 = repository.findById(user1.getId());
+        Optional<User> repositoryUser1 = repository.findByLoginId(user1.getLoginId());
         Assertions.assertEquals(Optional.of(user1), repositoryUser1);
         repositoryUser1.ifPresent(user -> System.out.println(user.getId()));
 
-        Optional<User> repositoryUser2 = repository.findById(user2.getId());
+        Optional<User> repositoryUser2 = repository.findByLoginId(user1.getLoginId());
         Assertions.assertEquals(Optional.of(user2), repositoryUser2);
 
-        repository.deleteUser(user1.getId());
+        repository.deleteUser(user1.getLoginId());
 
-        Optional<User> deletedUser1 = repository.findById(user1.getId());
+        Optional<User> deletedUser1 = repository.findByLoginId(user1.getLoginId());
         Assertions.assertEquals(Optional.empty(), deletedUser1);
     }
 }
