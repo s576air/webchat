@@ -12,7 +12,10 @@
     <button>설정</button>
 </a>
 <tr th:each="c: ${chatroomList}">
-    <td th:text="'id: ' + ${c.id} + ', name: ' + ${c.name}">id and name</td>
+    <td><form method="post" action="/chatroom">
+        <input type="hidden" id="id" name="id" th:value="${c.id}">
+        <button type="submit" th:text="'id: ' + ${c.id} + ', name: ' + ${c.name}"></button>
+    </form></td>
 </tr>
 </body>
 </html>

@@ -3,10 +3,12 @@ package com.s576air.webchat.repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collections;
 import java.util.List;
 
+@Repository
 public class ChatroomParticipantsRepository {
     private final JdbcTemplate jdbcTemplate;
 

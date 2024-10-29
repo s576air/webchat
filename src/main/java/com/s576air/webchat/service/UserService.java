@@ -30,7 +30,7 @@ public class UserService {
     }
 
     public boolean signUp(String login_id, String password) {
-        if (userRepository.findById(login_id).isPresent()) {
+        if (userRepository.findByLoginId(login_id).isPresent()) {
             return false;
         }
         String passwordHash = PasswordUtil.hashPassword(password);

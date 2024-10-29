@@ -50,7 +50,7 @@ public class UserRepository {
     }
 
     public Optional<User> findByLoginId(String loginId) {
-        String sql = "SELECT login_id, password_hash, name FROM users WHERE login_id = ?";
+        String sql = "SELECT id, login_id, password_hash, name FROM users WHERE login_id = ?";
         try {
             User user = jdbcTemplate.queryForObject(sql, userRowMapper(), loginId);
             return Optional.ofNullable(user);
