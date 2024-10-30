@@ -36,4 +36,10 @@ public class ChatroomParticipantsRepository {
     private RowMapper<Long> ChatroomIdRowMapper() {
         return (rs, rowNum) -> rs.getLong("chatroom_id");
     }
+
+    public boolean isUserInChatroom(Long chatroomId, Long userId) {
+        String sql = "SELECT COUNT(*) FROM chatroom_participants WHERE chatroom_id = ? AND user_id = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, chatroomId, userId);
+        return count != null && count > 0;
+    }
 }
