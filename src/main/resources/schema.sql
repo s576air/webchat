@@ -15,3 +15,25 @@ CREATE TABLE IF NOT EXISTS chatroom_participants (
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE,
     PRIMARY KEY (chatroom_id, user_id)
 );
+
+CREATE TABLE IF NOT EXISTS chat (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    chatroom_id BIGINT REFERENCES chatroom(id),
+    sender_id BIGINT REFERENCES users(id),
+    is_text BOOLEAN,
+    content_id BIGINT,
+    sent_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX chat_chatroom_id_and_time ON chat (chatroom_id, sent_time);
+
+CREATE TABLE IF NOT EXISTS text_chat (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    text TEXT
+);
+
+CREATE TABLE IF NOT EXISTS data_chat (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    ext VARCHAR(8),
+    data BLOB
+);
