@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS chatroom_participants (
 
 CREATE TABLE IF NOT EXISTS chat (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    chatroom_id BIGINT REFERENCES chatroom(id),
-    sender_id BIGINT REFERENCES users(id),
+    chatroom_id BIGINT REFERENCES chatroom(id) ON DELETE CASCADE,
+    user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
     is_text BOOLEAN,
     content_id BIGINT,
     sent_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
