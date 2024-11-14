@@ -13,7 +13,7 @@ public class ChatService {
         this.chatRepository = chatRepository;
     }
 
-    public boolean sendTextMessage(Long chatroomId, Long userId, String text) {
+    public boolean saveTextMessage(Long chatroomId, Long userId, String text) {
         return chatRepository.addTextChat(chatroomId, userId, text);
     }
 }
