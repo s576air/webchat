@@ -1,20 +1,29 @@
 package com.s576air.webchat.websocket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.s576air.webchat.domain.CustomUserDetails;
+import com.s576air.webchat.dto.MessageRequestPayload;
 import com.s576air.webchat.service.ChatService;
+import com.s576air.webchat.service.ChatroomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.util.Map;
+
 @Component
 public class ChatWebSocketHandler implements WebSocketHandler {
     private final ChatService chatService;
+    private final ChatroomService chatroomService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    public ChatWebSocketHandler(ChatService chatService) {
+    public ChatWebSocketHandler(ChatService chatService, ChatroomService chatroomService) {
         this.chatService = chatService;
+        this.chatroomService = chatroomService;
     }
 
     @Override
@@ -23,7 +32,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
         if (message instanceof TextMessage) {
-            handleTextMessage(session, (TextMessage) message);
+            handleTextMessage((TextMessage) message);
         } else if (message instanceof BinaryMessage) {
             handleBinaryMessage(session, (BinaryMessage) message);
         }
@@ -40,18 +49,29 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         return false;
     }
 
-    private void handleTextMessage(WebSocketSession session, TextMessage message) {
+    private void handleTextMessage(TextMessage message) {
         String payload = message.getPayload();
         System.out.println("텍스트 메시지: " + payload);
 
-        // 1. 스프링 시큐리터의 인증으로 유저 아이디를 가져온다.
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getId();
+        Long userId;
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            userId = userDetails.getId();
+        } catch (Exception e) {
+            return;
+        }
 
-        // 2. 메시지로부터 챗룸 id와 텍스트를 얻어온다.
-        // 3. 메시지를 저장한다.
-        // chatService.saveTextMessage(chatroomId, userId, text);
+        MessageRequestPayload request;
+        try {
+            request = objectMapper.readValue(payload, MessageRequestPayload.class);
+        } catch (JsonProcessingException e) {
+            return;
+        }
+
+        if (chatroomService.containsUser(request.getChatroomId(), userId)) {
+            chatService.saveTextMessage(request.getChatroomId(), userId, request.getText());
+        }
     }
 
     private void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {

@@ -3,6 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Chatroom</title>
+    <script>
+        const socket = new WebSocket('웹소켓 주소');
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+        }
+
+        const message = { id: 1, text: 'hi' };
+        socket.send(JSON.stringify(message));
+    </script>
 </head>
 <body>
 챗방 미구현
