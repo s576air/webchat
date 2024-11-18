@@ -25,4 +25,8 @@ public class ChatRepository {
         jdbcTemplate.update(sql, chatroomId, userId, true, textChatId.get());
         return true;
     }
+
+    public void getChats() {
+        String sql = "";
+    }
 }

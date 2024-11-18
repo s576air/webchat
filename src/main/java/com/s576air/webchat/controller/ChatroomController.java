@@ -10,6 +10,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Optional;
+
 @Controller
 public class ChatroomController {
     private final ChatroomService chatroomService;
@@ -25,11 +27,17 @@ public class ChatroomController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getId();
 
-        if (chatroomService.containsUser(chatroomId, userId)) {
+        Optional<String> chatroomName = chatroomService.getName(chatroomId);
+        if (
+            chatroomService.containsUser(chatroomId, userId) &&
+            chatroomName.isPresent()
+        ) {
             model.addAttribute("id", chatroomId);
+            model.addAttribute("name", chatroomName.get());
+            //
             return "chatroom";
         } else {
-            return "chatroom-not-found.html";
+            return "forward:/chatroom-not-found.html";
         }
     }
 }

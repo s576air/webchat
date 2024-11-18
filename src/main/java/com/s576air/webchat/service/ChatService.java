@@ -16,4 +16,12 @@ public class ChatService {
     public boolean saveTextMessage(Long chatroomId, Long userId, String text) {
         return chatRepository.addTextChat(chatroomId, userId, text);
     }
+
+    public void getChats() {
+        //
+    }
+
+    public void getLastChats() {
+        //
+    }
 }
