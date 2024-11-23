@@ -3,10 +3,17 @@ package com.s576air.webchat.domain;
 public class Chat {
     Long chatroomId;
     Long userId;
-    // text 또는 확장자(txt, png, mp4 등)
-    boolean type;
+    // 비어 있으면 채팅 텍스트 아니면 확장자(txt, png, mp4 등)
+    String type;
     // 텍스트는 채팅, 확장자는 url 표시
     String content;
+
+    public Chat(Long chatroomId, Long userId, String type, String content) {
+        this.chatroomId = chatroomId;
+        this.userId = userId;
+        this.type = type;
+        this.content = content;
+    }
 
     public String getContent() {
         return content;
@@ -16,11 +23,11 @@ public class Chat {
         this.content = content;
     }
 
-    public boolean isType() {
+    public String isType() {
         return type;
     }
 
-    public void setType(boolean type) {
+    public void setType(String type) {
         this.type = type;
     }
 

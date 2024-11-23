@@ -38,10 +38,6 @@ public class UserService {
         return userRepository.insertUser(login_id, passwordHash, "default").isPresent();
     }
 
-//    public void getFriendList() {
-//        //
-//    }
-
     public List<SimpleChatroom> getSimpleChatroomList(Long user_id) {
         List<Long> chatroomIdList = chatroomParticipantsRepository.findChatroomIdListByUserId(user_id);
         List<SimpleChatroom> chatroomList = new ArrayList<>(chatroomIdList.size());
