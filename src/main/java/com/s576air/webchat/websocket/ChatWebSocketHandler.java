@@ -12,6 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.sql.Timestamp;
+import java.time.DateTimeException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Component
@@ -69,9 +72,30 @@ public class ChatWebSocketHandler implements WebSocketHandler {
             return;
         }
 
-        if (chatroomService.containsUser(request.getChatroomId(), userId)) {
-            chatService.saveTextMessage(request.getChatroomId(), userId, request.getText());
+        if (!chatroomService.containsUser(request.getChatroomId(), userId)) {
+            return;
         }
+
+        if (request.getType().equals("send")) {
+            chatService.saveTextMessage(request.getChatroomId(), userId, request.getText());
+        } else if (request.getType().equals("load")) {
+            LocalDateTime time;
+            try {
+                time = LocalDateTime.parse(request.getText());
+            } catch (DateTimeException e) {
+                return;
+            }
+            chatService.getChats(request.getChatroomId(), Timestamp.valueOf(time));
+        }
+
+    }
+
+    private void handleSendTextMessage(Long chatroomId, Long userId) {
+        //
+    }
+
+    private void handleLoadTextMessage() {
+        //
     }
 
     private void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {

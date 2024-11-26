@@ -15,7 +15,9 @@
     </script>
 </head>
 <body>
-챗방 미구현
+<div th:each="chat: ${chats}"><div>
+    <span th:if="${chat.type == ''}" th:text="${chat.content}">Default</span>
+</div></div>
 <p th:text="'id: ' + ${id}"></p>
 </body>
 </html>

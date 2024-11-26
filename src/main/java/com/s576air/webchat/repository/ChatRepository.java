@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,38 @@ public class ChatRepository {
         String sql = "INSERT INTO chat(chatroom_id, user_id, is_text, content_id) VALUES(?, ?, ?, ?)";
         jdbcTemplate.update(sql, chatroomId, userId, true, textChatId.get());
         return true;
+    }
+
+    public Optional<List<Chat>> getChats(Long chatroomId, Timestamp time, int limit) {
+        String sql = "SELECT * FROM chat WHERE chatroom_id = ? AND sent_time < ? ORDER BY sent_time DESC LIMIT ?";
+        try {
+            List<ChatBase> chatBases = jdbcTemplate.query(sql, ChatBaseRowMapper(), chatroomId, time, limit);
+
+            List<ChatBase> textBases = new ArrayList<>();
+            List<ChatBase> binaryBases = new ArrayList<>();
+
+            for (ChatBase chatBase: chatBases) {
+                if (chatBase.isText()) {
+                    textBases.add(chatBase);
+                } else {
+                    binaryBases.add(chatBase);
+                }
+            }
+
+            Optional<List<Chat>> textChats = getTextChats(textBases);
+            Optional<List<Chat>> binaryChats = Optional.of(new ArrayList<>());
+
+            if (textChats.isEmpty() || binaryChats.isEmpty()) { return Optional.empty(); }
+
+            // 나중에 병합 정렬로 수정 바람
+            List<Chat> chats = textChats.get();
+
+            return Optional.of(chats);
+
+        } catch (Exception e) {
+            System.out.println("findChatroomListByUserId error: " + e.getMessage());
+            return Optional.empty();
+        }
     }
 
     public Optional<List<Chat>> getLastChats(Long chatroomId, int limit) {
@@ -58,9 +91,8 @@ public class ChatRepository {
 
         } catch (Exception e) {
             System.out.println("findChatroomListByUserId error: " + e.getMessage());
+            return Optional.empty();
         }
-
-        return Optional.empty();
     }
 
     private RowMapper<ChatBase> ChatBaseRowMapper() {

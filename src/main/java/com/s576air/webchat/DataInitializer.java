@@ -35,10 +35,12 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("테스트 아이디 없음. 추가 작업 시작");
             String passwordHash = PasswordUtil.hashPassword("password");
 
+            // 계정 3개 추가
             Long userId1 = userRepository.insertUser("test", passwordHash, "name1").orElseThrow();
             Long userId2 = userRepository.insertUser("test2", passwordHash, "name2").orElseThrow();
             Long userId3 = userRepository.insertUser("test3", passwordHash, "name3").orElseThrow();
 
+            // 채팅방 2개 추가
             Long chatroomId1 = chatroomRepository.insert("test2와의 챗방").orElseThrow();
             chatroomParticipantsRepository.insert(chatroomId1, userId1);
             chatroomParticipantsRepository.insert(chatroomId1, userId2);

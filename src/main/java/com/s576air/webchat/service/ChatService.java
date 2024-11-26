@@ -1,8 +1,13 @@
 package com.s576air.webchat.service;
 
+import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.repository.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ChatService {
@@ -17,11 +22,11 @@ public class ChatService {
         return chatRepository.addTextChat(chatroomId, userId, text);
     }
 
-    public void getChats() {
-        //
+    public Optional<List<Chat>> getChats(Long chatroomId, Timestamp time) {
+        return chatRepository.getChats(chatroomId, time, 2);
     }
 
-    public void getLastChats() {
-        //
+    public Optional<List<Chat>> getLastChats(Long chatroomId) {
+        return chatRepository.getLastChats(chatroomId, 2);
     }
 }

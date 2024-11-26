@@ -1,6 +1,7 @@
 package com.s576air.webchat.controller;
 
 import com.s576air.webchat.domain.CustomUserDetails;
+import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,10 +16,12 @@ import java.util.Optional;
 @Controller
 public class ChatroomController {
     private final ChatroomService chatroomService;
+    private final ChatService chatService;
 
     @Autowired
-    public ChatroomController(ChatroomService chatroomService) {
+    public ChatroomController(ChatroomService chatroomService, ChatService chatService) {
         this.chatroomService = chatroomService;
+        this.chatService = chatService;
     }
 
     @PostMapping("chatroom")
@@ -34,7 +37,7 @@ public class ChatroomController {
         ) {
             model.addAttribute("id", chatroomId);
             model.addAttribute("name", chatroomName.get());
-            //
+            model.addAttribute("chats", chatService.getLastChats(chatroomId));
             return "chatroom";
         } else {
             return "forward:/chatroom-not-found.html";
