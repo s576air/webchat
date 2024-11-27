@@ -23,7 +23,7 @@ public class Chat {
         this.content = content;
     }
 
-    public String isType() {
+    public String getType() {
         return type;
     }
 

@@ -20,7 +20,7 @@ public class TextChatRepository {
     }
 
     public Optional<Long> insert(String text) {
-        String sql = "INSERT INFO text_chat(text) VALUES(?)";
+        String sql = "INSERT INTO text_chat(text) VALUES(?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {

@@ -1,5 +1,6 @@
 package com.s576air.webchat.controller;
 
+import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.domain.CustomUserDetails;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -31,13 +33,15 @@ public class ChatroomController {
         Long userId = userDetails.getId();
 
         Optional<String> chatroomName = chatroomService.getName(chatroomId);
+        Optional<List<Chat>> chats = chatService.getLastChats(chatroomId);
         if (
             chatroomService.containsUser(chatroomId, userId) &&
-            chatroomName.isPresent()
+            chatroomName.isPresent() &&
+            chats.isPresent()
         ) {
             model.addAttribute("id", chatroomId);
             model.addAttribute("name", chatroomName.get());
-            model.addAttribute("chats", chatService.getLastChats(chatroomId));
+            model.addAttribute("chats", chats.get());
             return "chatroom";
         } else {
             return "forward:/chatroom-not-found.html";

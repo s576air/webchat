@@ -1,6 +1,8 @@
 package com.s576air.webchat;
 
+import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.domain.User;
+import com.s576air.webchat.repository.ChatRepository;
 import com.s576air.webchat.repository.ChatroomParticipantsRepository;
 import com.s576air.webchat.repository.ChatroomRepository;
 import com.s576air.webchat.repository.UserRepository;
@@ -16,16 +18,19 @@ public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
     private final ChatroomRepository chatroomRepository;
     private final ChatroomParticipantsRepository chatroomParticipantsRepository;
+    private final ChatRepository chatRepository;
 
     @Autowired
     public DataInitializer(
         UserRepository userRepository,
         ChatroomRepository chatroomRepository,
-        ChatroomParticipantsRepository chatroomParticipantsRepository
+        ChatroomParticipantsRepository chatroomParticipantsRepository,
+        ChatRepository chatRepository
     ) {
         this.userRepository = userRepository;
         this.chatroomRepository = chatroomRepository;
         this.chatroomParticipantsRepository = chatroomParticipantsRepository;
+        this.chatRepository = chatRepository;
     }
 
     @Override
@@ -49,6 +54,14 @@ public class DataInitializer implements CommandLineRunner {
             chatroomParticipantsRepository.insert(chatroomId2, userId1);
             chatroomParticipantsRepository.insert(chatroomId2, userId2);
             chatroomParticipantsRepository.insert(chatroomId2, userId3);
+
+            // 채팅 추가
+            chatRepository.addTextChat(chatroomId1, userId1, "나는 user1이야. 첫 메시지네. 잘 부탁해.");
+            chatRepository.addTextChat(chatroomId1, userId2, "나는 user2야. 나도 잘 부탁해.");
+
+            chatRepository.addTextChat(chatroomId2, userId1, "내가 처음이다!");
+            chatRepository.addTextChat(chatroomId2, userId2, "나는 두번째네..");
+            chatRepository.addTextChat(chatroomId2, userId3, "내가 꼴찌네");
 
             System.out.println("데이터 초기화 완료");
         }

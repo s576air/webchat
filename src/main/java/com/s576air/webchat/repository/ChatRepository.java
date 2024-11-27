@@ -109,7 +109,13 @@ public class ChatRepository {
         if (textBases.isEmpty()) { return Optional.of(new ArrayList<>()); }
 
         String sql = "SELECT * FROM text_chat WHERE id IN (?" + ",?".repeat(textBases.size() - 1) + ")";
-        List<String> texts = jdbcTemplate.query(sql, TextChatRowMapper(), textBases);
+
+        List<Long> contentIds = new ArrayList<>();
+        for (ChatBase chatBase: textBases) {
+            contentIds.add(chatBase.getContentId());
+        }
+
+        List<String> texts = jdbcTemplate.query(sql, TextChatRowMapper(), contentIds.toArray());
 
         if (textBases.size() != texts.size()) { return Optional.empty(); }
 

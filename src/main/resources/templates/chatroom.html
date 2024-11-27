@@ -16,7 +16,7 @@
 </head>
 <body>
 <div th:each="chat: ${chats}"><div>
-    <span th:if="${chat.type == ''}" th:text="${chat.content}">Default</span>
+    <span th:if="${chat.type.isEmpty()}" th:text="${chat.content}">Default</span>
 </div></div>
 <p th:text="'id: ' + ${id}"></p>
 </body>
