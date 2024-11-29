@@ -1,5 +1,7 @@
 package com.s576air.webchat.domain;
 
+import java.time.LocalDateTime;
+
 public class Chat {
     Long chatroomId;
     Long userId;
@@ -7,12 +9,23 @@ public class Chat {
     String type;
     // 텍스트는 채팅, 확장자는 url 표시
     String content;
+    LocalDateTime sentTime;
 
-    public Chat(Long chatroomId, Long userId, String type, String content) {
+
+    public Chat(Long chatroomId, Long userId, String type, String content, LocalDateTime sentTime) {
         this.chatroomId = chatroomId;
         this.userId = userId;
         this.type = type;
         this.content = content;
+        this.sentTime = sentTime;
+    }
+
+    public Long getChatroomId() {
+        return chatroomId;
+    }
+
+    public void setChatroomId(Long chatroomId) {
+        this.chatroomId = chatroomId;
     }
 
     public String getContent() {
@@ -39,11 +52,11 @@ public class Chat {
         this.userId = userId;
     }
 
-    public Long getChatroomId() {
-        return chatroomId;
+    public LocalDateTime getSentTime() {
+        return sentTime;
     }
 
-    public void setChatroomId(Long chatroomId) {
-        this.chatroomId = chatroomId;
+    public void setSentTime(LocalDateTime sentTime) {
+        this.sentTime = sentTime;
     }
 }

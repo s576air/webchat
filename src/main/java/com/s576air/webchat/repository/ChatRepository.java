@@ -123,7 +123,7 @@ public class ChatRepository {
 
         for (int i = 0; i < textBases.size(); i++) {
             ChatBase base = textBases.get(i);
-            chats.add(new Chat(base.getChatroomId(), base.getUserId(), "", texts.get(i)));
+            chats.add(new Chat(base.getChatroomId(), base.getUserId(), "", texts.get(i), base.getSentTime()));
         }
 
         return Optional.of(chats);

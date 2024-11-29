@@ -13,11 +13,20 @@
         const message = { id: 1, text: 'hi' };
         socket.send(JSON.stringify(message));
     </script>
+    <style>
+        .chat {
+            font-size: 18px;
+        }
+        .chat-info {
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
 <div th:each="chat: ${chats}"><div>
-    <span th:if="${chat.type.isEmpty()}" th:text="${chat.content}">Default</span>
+    <div class="chat" th:if="${chat.type.isEmpty()}" th:text="${chat.content}">Default</div>
+    <div class="chat-info" th:text="'유저id: ' + ${chat.userId} + ', 시간: ' + ${#temporals.format(chat.sentTime, 'yyyy-MM-dd HH:mm:ss')}">Default chat-info</div>
 </div></div>
-<p th:text="'id: ' + ${id}"></p>
+<p th:text="'챗방 id: ' + ${id}"></p>
 </body>
 </html>
