@@ -2,6 +2,7 @@ package com.s576air.webchat.websocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.domain.CustomUserDetails;
 import com.s576air.webchat.dto.MessageRequestPayload;
 import com.s576air.webchat.service.ChatService;
@@ -15,7 +16,9 @@ import org.springframework.web.socket.*;
 import java.sql.Timestamp;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class ChatWebSocketHandler implements WebSocketHandler {
@@ -34,10 +37,17 @@ public class ChatWebSocketHandler implements WebSocketHandler {
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
-        if (message instanceof TextMessage) {
-            handleTextMessage((TextMessage) message);
-        } else if (message instanceof BinaryMessage) {
-            handleBinaryMessage(session, (BinaryMessage) message);
+        Authentication authentication = (Authentication) session.getAttributes().get("user");
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Long userId = userDetails.getId();
+
+            if (message instanceof TextMessage) {
+                handleTextMessage(session, (TextMessage) message, userId);
+            } else if (message instanceof BinaryMessage) {
+                handleBinaryMessage(session, (BinaryMessage) message);
+            }
         }
     }
 
@@ -52,18 +62,9 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         return false;
     }
 
-    private void handleTextMessage(TextMessage message) {
+    private void handleTextMessage(WebSocketSession session, TextMessage message, Long userId) {
         String payload = message.getPayload();
         System.out.println("텍스트 메시지: " + payload);
-
-        Long userId;
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            userId = userDetails.getId();
-        } catch (Exception e) {
-            return;
-        }
 
         MessageRequestPayload request;
         try {
@@ -85,7 +86,10 @@ public class ChatWebSocketHandler implements WebSocketHandler {
             } catch (DateTimeException e) {
                 return;
             }
-            chatService.getChats(request.getChatroomId(), Timestamp.valueOf(time));
+            Optional<List<Chat>> chats = chatService.getChats(request.getChatroomId(), Timestamp.valueOf(time));
+            if (chats.isPresent()) {
+                //session.sendMessage(new TextMessage("")); // chats를 json으로 변환해서 전송
+            }
         }
 
     }
