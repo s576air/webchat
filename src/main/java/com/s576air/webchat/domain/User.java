@@ -1,6 +1,6 @@
 package com.s576air.webchat.domain;
 
-import com.s576air.webchat.service.PasswordUtil;
+import com.s576air.webchat.util.PasswordUtil;
 
 public class User {
     Long id;

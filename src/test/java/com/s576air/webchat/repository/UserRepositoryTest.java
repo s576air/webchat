@@ -2,7 +2,7 @@ package com.s576air.webchat.repository;
 
 
 import com.s576air.webchat.domain.User;
-import com.s576air.webchat.service.PasswordUtil;
+import com.s576air.webchat.util.PasswordUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

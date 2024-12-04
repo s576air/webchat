@@ -1,4 +1,4 @@
-package com.s576air.webchat.service;
+package com.s576air.webchat.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

@@ -7,12 +7,14 @@ import com.s576air.webchat.domain.CustomUserDetails;
 import com.s576air.webchat.dto.MessageRequestPayload;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
+import com.s576air.webchat.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
@@ -87,8 +89,17 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 return;
             }
             Optional<List<Chat>> chats = chatService.getChats(request.getChatroomId(), Timestamp.valueOf(time));
+
             if (chats.isPresent()) {
-                //session.sendMessage(new TextMessage("")); // chats를 json으로 변환해서 전송
+                Optional<String> chatsJson = JsonUtil.toJson(chats.get());
+                if (chatsJson.isPresent()) {
+                    try {
+                        session.sendMessage(new TextMessage(chatsJson.get()));
+                    } catch (IOException e) {
+                        return;
+                    }
+
+                }
             }
         }
 

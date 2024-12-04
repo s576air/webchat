@@ -1,10 +1,10 @@
 package com.s576air.webchat.service;
 
 import com.s576air.webchat.domain.SimpleChatroom;
-import com.s576air.webchat.domain.User;
 import com.s576air.webchat.repository.ChatroomParticipantsRepository;
 import com.s576air.webchat.repository.ChatroomRepository;
 import com.s576air.webchat.repository.UserRepository;
+import com.s576air.webchat.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,17 +1,13 @@
 package com.s576air.webchat;
 
-import com.s576air.webchat.domain.Chat;
-import com.s576air.webchat.domain.User;
 import com.s576air.webchat.repository.ChatRepository;
 import com.s576air.webchat.repository.ChatroomParticipantsRepository;
 import com.s576air.webchat.repository.ChatroomRepository;
 import com.s576air.webchat.repository.UserRepository;
-import com.s576air.webchat.service.PasswordUtil;
+import com.s576air.webchat.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
