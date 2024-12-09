@@ -10,16 +10,13 @@ import com.s576air.webchat.service.ChatroomService;
 import com.s576air.webchat.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -46,7 +43,10 @@ public class ChatWebSocketHandler implements WebSocketHandler {
             Long userId = userDetails.getId();
 
             if (message instanceof TextMessage) {
-                handleTextMessage(session, (TextMessage) message, userId);
+                Optional<String> returnMessage = handleTextMessage(session, (TextMessage) message, userId);
+                if (returnMessage.isPresent()) {
+                    session.sendMessage(new TextMessage(returnMessage.get()));
+                }
             } else if (message instanceof BinaryMessage) {
                 handleBinaryMessage(session, (BinaryMessage) message);
             }
@@ -64,7 +64,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         return false;
     }
 
-    private void handleTextMessage(WebSocketSession session, TextMessage message, Long userId) {
+    private Optional<String> handleTextMessage(WebSocketSession session, TextMessage message, Long userId) {
         String payload = message.getPayload();
         System.out.println("텍스트 메시지: " + payload);
 
@@ -72,45 +72,35 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         try {
             request = objectMapper.readValue(payload, MessageRequestPayload.class);
         } catch (JsonProcessingException e) {
-            return;
+            return Optional.of("{\"error\": \"요청 해석 실패\"}");
         }
 
         if (!chatroomService.containsUser(request.getChatroomId(), userId)) {
-            return;
+            return Optional.of("{\"error\": \"소속되지 않은 채팅방\"}");
         }
 
         if (request.getType().equals("send")) {
             chatService.saveTextMessage(request.getChatroomId(), userId, request.getText());
+            return Optional.empty();
         } else if (request.getType().equals("load")) {
             LocalDateTime time;
             try {
                 time = LocalDateTime.parse(request.getText());
             } catch (DateTimeException e) {
-                return;
+                return Optional.of("{\"error\": \"시간 해석 실패\"}");
             }
             Optional<List<Chat>> chats = chatService.getChats(request.getChatroomId(), Timestamp.valueOf(time));
 
             if (chats.isPresent()) {
                 Optional<String> chatsJson = JsonUtil.toJson(chats.get());
                 if (chatsJson.isPresent()) {
-                    try {
-                        session.sendMessage(new TextMessage(chatsJson.get()));
-                    } catch (IOException e) {
-                        return;
-                    }
-
+                    return chatsJson;
                 }
+            } else {
+                return Optional.of("{\"error\": \"채팅 획득 실패\"}");
             }
         }
-
-    }
-
-    private void handleSendTextMessage(Long chatroomId, Long userId) {
-        //
-    }
-
-    private void handleLoadTextMessage() {
-        //
+        return Optional.empty();
     }
 
     private void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {

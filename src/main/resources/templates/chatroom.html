@@ -6,12 +6,28 @@
     <script>
         const socket = new WebSocket('/ws/chat');
 
+        socket.onopen = () => {
+            console.log("WebSocket 연결됨!");
+        };
+
         socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
+            console.log(event.data);
+            //const data = JSON.parse(event.data);
+
         }
 
+        socket.onclose = () => {
+            console.log("WebSocket 연결 종료됨");
+        };
+
+        socket.onerror = (error) => {
+            console.error("WebSocket 오류:", error);
+        };
+
         const message = { id: 1, text: 'hi' };
-        socket.send(JSON.stringify(message));
+        setTimeout(() => {
+            socket.send(JSON.stringify(message));
+        }, 2000);
     </script>
     <style>
         .chat {
