@@ -1,6 +1,7 @@
 package com.s576air.webchat;
 
 import com.s576air.webchat.websocket.ChatWebSocketHandler;
+import com.s576air.webchat.websocket.SecurityHandshakeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -12,15 +13,18 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
     private final ChatWebSocketHandler chatWebSocketHandler;
+    private final SecurityHandshakeInterceptor securityHandshakeInterceptor;
 
     @Autowired
-    public WebSocketConfig(ChatWebSocketHandler chatWebSocketHandler) {
+    public WebSocketConfig(ChatWebSocketHandler chatWebSocketHandler, SecurityHandshakeInterceptor securityHandshakeInterceptor) {
         this.chatWebSocketHandler = chatWebSocketHandler;
+        this.securityHandshakeInterceptor = securityHandshakeInterceptor;
     }
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(chatWebSocketHandler, "/ws/chat")
+                .addInterceptors(securityHandshakeInterceptor)
                 .setAllowedOrigins("*");
     }
 }

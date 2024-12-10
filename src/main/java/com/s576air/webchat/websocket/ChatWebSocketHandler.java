@@ -66,7 +66,6 @@ public class ChatWebSocketHandler implements WebSocketHandler {
 
     private Optional<String> handleTextMessage(WebSocketSession session, TextMessage message, Long userId) {
         String payload = message.getPayload();
-        System.out.println("텍스트 메시지: " + payload);
 
         MessageRequestPayload request;
         try {

@@ -24,7 +24,11 @@
             console.error("WebSocket 오류:", error);
         };
 
-        const message = { id: 1, text: 'hi' };
+        const send = {
+            type: "send",
+            chatroomId: 1,
+            text: "new chat!!"
+        };
         setTimeout(() => {
             socket.send(JSON.stringify(message));
         }, 2000);
