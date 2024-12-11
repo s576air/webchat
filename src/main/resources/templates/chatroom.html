@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Chatroom</title>
     <script>
+        const chatroomId = /*[[${id}]]*/ 'default';
         const socket = new WebSocket('/ws/chat');
 
         socket.onopen = () => {
@@ -24,6 +25,30 @@
             console.error("WebSocket 오류:", error);
         };
 
+        document.getElementById('load').addEventListener('click', () => {
+            const firstChatTime = document.getElementById('chats').children[0].children[1].textContent;
+
+            const loadRequest = {
+                type: "load"
+                chatroomId: chatroomId,
+                text: firstChatTime
+            };
+            socket.send(JSON.stringify(loadRequest));
+        });
+
+        document.getElementById('send').addEventListener('click', () => {
+            const userInput = document.getElementById('userInput').value;
+
+            if (userInput) {
+                const message = {
+                    type: "send"
+                    chatroomId: chatroomId,
+                    text: userInput
+                };
+                socket.send(JSON.stringify(message));
+            }
+        });
+
         const send = {
             type: "send",
             chatroomId: 1,
@@ -43,10 +68,14 @@
     </style>
 </head>
 <body>
-<div th:each="chat: ${chats}"><div>
+<button type="button" id="load">이전 메시지 가져오기</button>
+<div th:each="chat: ${chats}" id="chats"><div>
     <div class="chat" th:if="${chat.type.isEmpty()}" th:text="${chat.content}">Default</div>
     <div class="chat-info" th:text="'유저id: ' + ${chat.userId} + ', 시간: ' + ${#temporals.format(chat.sentTime, 'yyyy-MM-dd HH:mm:ss')}">Default chat-info</div>
 </div></div>
+<label for="userInput">메시지:</label>
+<input type="text" id="userInput" placeholder="메시지 입력">
+<button type="button" id="send">전송</button>
 <p th:text="'챗방 id: ' + ${id}"></p>
 </body>
 </html>
