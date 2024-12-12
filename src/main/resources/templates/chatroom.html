@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Chatroom</title>
     <script>
-        const chatroomId = /*[[${id}]]*/ 'default';
+        const chatroomId = [[${id}]];
+        const firstChatTime = '[[${#temporals.format(chats[0].sentTime, "yyyy-MM-dd\'T\'HH:mm:ss")}]]';
         const socket = new WebSocket('/ws/chat');
 
         socket.onopen = () => {
@@ -25,38 +26,30 @@
             console.error("WebSocket 오류:", error);
         };
 
-        document.getElementById('load').addEventListener('click', () => {
-            const firstChatTime = document.getElementById('chats').children[0].children[1].textContent;
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('load').addEventListener('click', () => {
 
-            const loadRequest = {
-                type: "load"
-                chatroomId: chatroomId,
-                text: firstChatTime
-            };
-            socket.send(JSON.stringify(loadRequest));
-        });
-
-        document.getElementById('send').addEventListener('click', () => {
-            const userInput = document.getElementById('userInput').value;
-
-            if (userInput) {
-                const message = {
-                    type: "send"
+                const loadRequest = {
+                    type: "load",
                     chatroomId: chatroomId,
-                    text: userInput
+                    text: firstChatTime
                 };
-                socket.send(JSON.stringify(message));
-            }
-        });
+                socket.send(JSON.stringify(loadRequest));
+            });
 
-        const send = {
-            type: "send",
-            chatroomId: 1,
-            text: "new chat!!"
-        };
-        setTimeout(() => {
-            socket.send(JSON.stringify(message));
-        }, 2000);
+            document.getElementById('send').addEventListener('click', () => {
+                const userInput = document.getElementById('userInput').value;
+
+                if (userInput) {
+                    const message = {
+                        type: "send",
+                        chatroomId: chatroomId,
+                        text: userInput
+                    };
+                    socket.send(JSON.stringify(message));
+                }
+            });
+        });
     </script>
     <style>
         .chat {

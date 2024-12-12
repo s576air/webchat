@@ -66,11 +66,13 @@ public class ChatWebSocketHandler implements WebSocketHandler {
 
     private Optional<String> handleTextMessage(WebSocketSession session, TextMessage message, Long userId) {
         String payload = message.getPayload();
+        System.out.println("들어온 메시지: " + payload);
 
         MessageRequestPayload request;
         try {
             request = objectMapper.readValue(payload, MessageRequestPayload.class);
         } catch (JsonProcessingException e) {
+            System.out.println(e.getMessage());
             return Optional.of("{\"error\": \"요청 해석 실패\"}");
         }
 

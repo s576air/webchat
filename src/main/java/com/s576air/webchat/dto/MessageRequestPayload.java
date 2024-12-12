@@ -7,7 +7,10 @@ public class MessageRequestPayload {
     // send type: 전송할 메시지, load type: 시간을 나타내는 문자열
     String text;
 
-    public MessageRequestPayload(Long chatroomId, String text) {
+    public MessageRequestPayload() {}
+
+    public MessageRequestPayload(String type, Long chatroomId, String text) {
+        this.type = type;
         this.chatroomId = chatroomId;
         this.text = text;
     }
@@ -16,11 +19,23 @@ public class MessageRequestPayload {
         return type;
     }
 
-    public Long getChatroomId() {
-        return chatroomId;
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getText() {
         return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public Long getChatroomId() {
+        return chatroomId;
+    }
+
+    public void setChatroomId(Long chatroomId) {
+        this.chatroomId = chatroomId;
     }
 }
