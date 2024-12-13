@@ -72,7 +72,6 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         try {
             request = objectMapper.readValue(payload, MessageRequestPayload.class);
         } catch (JsonProcessingException e) {
-            System.out.println(e.getMessage());
             return Optional.of("{\"error\": \"요청 해석 실패\"}");
         }
 

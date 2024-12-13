@@ -53,10 +53,15 @@ public class DataInitializer implements CommandLineRunner {
 
             // 채팅 추가
             chatRepository.addTextChat(chatroomId1, userId1, "나는 user1이야. 첫 메시지네. 잘 부탁해.");
+            Thread.sleep(10);
             chatRepository.addTextChat(chatroomId1, userId2, "나는 user2야. 나도 잘 부탁해.");
+            Thread.sleep(10);
+            chatRepository.addTextChat(chatroomId1, userId2, "마지막 메시지!");
 
             chatRepository.addTextChat(chatroomId2, userId1, "내가 처음이다!");
+            Thread.sleep(10);
             chatRepository.addTextChat(chatroomId2, userId2, "나는 두번째네..");
+            Thread.sleep(10);
             chatRepository.addTextChat(chatroomId2, userId3, "내가 꼴찌네");
 
             System.out.println("데이터 초기화 완료");

@@ -11,6 +11,7 @@ public class Chat {
     String content;
     LocalDateTime sentTime;
 
+    public Chat() {}
 
     public Chat(Long chatroomId, Long userId, String type, String content, LocalDateTime sentTime) {
         this.chatroomId = chatroomId;

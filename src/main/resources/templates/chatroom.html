@@ -5,7 +5,7 @@
     <title>Chatroom</title>
     <script>
         const chatroomId = [[${id}]];
-        const firstChatTime = '[[${#temporals.format(chats[0].sentTime, "yyyy-MM-dd\'T\'HH:mm:ss")}]]';
+        const firstChatTime = '[[${#temporals.format(chats[0].sentTime, "yyyy-MM-dd" + "'T'" + "HH:mm:ss.SSS")}]]';
         const socket = new WebSocket('/ws/chat');
 
         socket.onopen = () => {
