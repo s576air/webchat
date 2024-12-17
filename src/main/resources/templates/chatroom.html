@@ -5,7 +5,7 @@
     <title>Chatroom</title>
     <script>
         const chatroomId = [[${id}]];
-        const firstChatTime = '[[${#temporals.format(chats[0].sentTime, "yyyy-MM-dd" + "'T'" + "HH:mm:ss.SSS")}]]';
+        let firstChatTime = '[[${#temporals.format(chats[0].sentTime, "yyyy-MM-dd" + "'T'" + "HH:mm:ss.SSS")}]]';
         const socket = new WebSocket('/ws/chat');
 
         socket.onopen = () => {
@@ -14,8 +14,31 @@
 
         socket.onmessage = function(event) {
             console.log(event.data);
-            //const data = JSON.parse(event.data);
+            const messages = JSON.parse(event.data);
+            const chatsDiv = document.getElementById('chats');
 
+            if (messages.length != 0) {
+                firstChatTime = messages[0].sentTime;
+            }
+
+            for(let i = messages.length - 1; i >= 0; i--) {
+                const message = messages[i];
+
+                const outerDiv = document.createElement('div');
+
+                const chat = document.createElement('div');
+                chat.classList.add('chat');
+                chat.textContent = message.content;
+
+                const chatInfo = document.createElement('div');
+                chatInfo.classList.add('chat-info');
+                chatInfo.textContent = message.sentTime;
+
+                outerDiv.appendChild(chat);
+                outerDiv.appendChild(chatInfo);
+
+                chatsDiv.prepend(outerDiv);
+            }
         }
 
         socket.onclose = () => {
@@ -61,14 +84,18 @@
     </style>
 </head>
 <body>
+
 <button type="button" id="load">이전 메시지 가져오기</button>
+
 <div th:each="chat: ${chats}" id="chats"><div>
     <div class="chat" th:if="${chat.type.isEmpty()}" th:text="${chat.content}">Default</div>
     <div class="chat-info" th:text="'유저id: ' + ${chat.userId} + ', 시간: ' + ${#temporals.format(chat.sentTime, 'yyyy-MM-dd HH:mm:ss')}">Default chat-info</div>
 </div></div>
+
 <label for="userInput">메시지:</label>
 <input type="text" id="userInput" placeholder="메시지 입력">
 <button type="button" id="send">전송</button>
+
 <p th:text="'챗방 id: ' + ${id}"></p>
 </body>
 </html>
