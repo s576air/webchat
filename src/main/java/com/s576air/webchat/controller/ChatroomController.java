@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,9 +40,11 @@ public class ChatroomController {
             chatroomName.isPresent() &&
             chats.isPresent()
         ) {
+            List<Chat> chats2 = chats.get();
+            Collections.reverse(chats2);
             model.addAttribute("id", chatroomId);
             model.addAttribute("name", chatroomName.get());
-            model.addAttribute("chats", chats.get());
+            model.addAttribute("chats", chats2);
             return "chatroom";
         } else {
             return "forward:/chatroom-not-found.html";

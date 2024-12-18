@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,8 +27,9 @@ public class ChatRepository {
     public boolean addTextChat(Long chatroomId, Long userId, String text) {
         Optional<Long> textChatId = textChatRepository.insert(text);
         if (textChatId.isEmpty()) { return false; }
-        String sql = "INSERT INTO chat(chatroom_id, user_id, is_text, content_id) VALUES(?, ?, ?, ?)";
-        jdbcTemplate.update(sql, chatroomId, userId, true, textChatId.get());
+        String sql = "INSERT INTO chat(chatroom_id, user_id, is_text, content_id, sent_time) VALUES(?, ?, ?, ?, ?)";
+        Timestamp time = new Timestamp(new Date().getTime()); // 정밀도 ms
+        jdbcTemplate.update(sql, chatroomId, userId, true, textChatId.get(), time);
         return true;
     }
 
@@ -108,7 +110,8 @@ public class ChatRepository {
     private Optional<List<Chat>> getTextChats(List<ChatBase> textBases) {
         if (textBases.isEmpty()) { return Optional.of(new ArrayList<>()); }
 
-        String sql = "SELECT * FROM text_chat WHERE id IN (?" + ",?".repeat(textBases.size() - 1) + ")";
+        int n = textBases.size() - 1;
+        String sql = "SELECT * FROM text_chat WHERE id IN (?" + ",?".repeat(n) + ") ORDER BY id DESC";
 
         List<Long> contentIds = new ArrayList<>();
         for (ChatBase chatBase: textBases) {
