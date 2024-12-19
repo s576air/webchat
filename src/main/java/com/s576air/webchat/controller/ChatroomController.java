@@ -45,6 +45,7 @@ public class ChatroomController {
             model.addAttribute("id", chatroomId);
             model.addAttribute("name", chatroomName.get());
             model.addAttribute("chats", chats2);
+            model.addAttribute("timeExpr", "yyyy-MM-dd'T'HH:mm:ss.SSS");
             return "chatroom";
         } else {
             return "forward:/chatroom-not-found.html";
