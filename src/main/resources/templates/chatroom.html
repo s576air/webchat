@@ -14,15 +14,13 @@
 
         socket.onmessage = function(event) {
             console.log(event.data);
-            const messages = JSON.parse(event.data);
-            const chatsDiv = document.getElementById('chats');
+            const data = JSON.parse(event.data);
 
-            if (messages.length != 0) {
-                firstChatTime = messages[messages.length-1].sentTime;
-            }
-
-            for(let i = 0; i < messages.length; i++) {
-                const message = messages[i];
+            if (data.error) {
+                console.log(messages);
+            } else if (data.content) {
+                const message = data;
+                const chatsDiv = document.getElementById('chats');
 
                 const outerDiv = document.createElement('div');
 
@@ -37,8 +35,36 @@
                 outerDiv.appendChild(chat);
                 outerDiv.appendChild(chatInfo);
 
-                chatsDiv.prepend(outerDiv);
+                chatsDiv.append(outerDiv);
+            } else {
+                const messages = data;
+                const chatsDiv = document.getElementById('chats');
+
+                if (messages.length != 0) {
+                    firstChatTime = messages[messages.length-1].sentTime;
+                }
+
+                for(let i = 0; i < messages.length; i++) {
+                    const message = messages[i];
+
+                    const outerDiv = document.createElement('div');
+
+                    const chat = document.createElement('div');
+                    chat.classList.add('chat');
+                    chat.textContent = message.content;
+
+                    const chatInfo = document.createElement('div');
+                    chatInfo.classList.add('chat-info');
+                    chatInfo.textContent = '유저id: ' + message.userId + ', 시간: ' +  message.sentTime;
+
+                    outerDiv.appendChild(chat);
+                    outerDiv.appendChild(chatInfo);
+
+                    chatsDiv.prepend(outerDiv);
+                }
             }
+
+
         }
 
         socket.onclose = () => {

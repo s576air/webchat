@@ -80,7 +80,11 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         }
 
         if (request.getType().equals("send")) {
-            chatService.saveTextMessage(request.getChatroomId(), userId, request.getText());
+            boolean result = chatService.saveTextMessage(request.getChatroomId(), userId, request.getText());
+            if (result) {
+                // 성공적인 저장. 서비스에서 돌려가며 메시지 전송을 시도
+                // chatService.getActiveUsers();
+            }
             return Optional.empty();
         } else if (request.getType().equals("load")) {
             LocalDateTime time;
