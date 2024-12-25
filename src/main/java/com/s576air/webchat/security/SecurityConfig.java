@@ -1,4 +1,4 @@
-package com.s576air.webchat;
+package com.s576air.webchat.security;
 
 import com.s576air.webchat.service.LoginDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;

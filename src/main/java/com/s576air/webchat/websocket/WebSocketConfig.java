@@ -1,7 +1,5 @@
-package com.s576air.webchat;
+package com.s576air.webchat.websocket;
 
-import com.s576air.webchat.websocket.ChatWebSocketHandler;
-import com.s576air.webchat.websocket.SecurityHandshakeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
