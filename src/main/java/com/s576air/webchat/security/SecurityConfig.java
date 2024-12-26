@@ -11,13 +11,22 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final LoginDetailsService loginDetailsService;
+    private final CustomAuthenticationSuccessHandler authenticationSuccessHandler;
 
     @Autowired
-    private LoginDetailsService loginDetailsService;
+    public SecurityConfig(
+        LoginDetailsService loginDetailsService,
+        CustomAuthenticationSuccessHandler authenticationSuccessHandler
+    ) {
+        this.loginDetailsService = loginDetailsService;
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -28,7 +37,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/friend-list", true)) // 적절히 수정바람
+                .defaultSuccessUrl("/friend-list", true)
+                .successHandler(authenticationSuccessHandler))
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .invalidateHttpSession(true)
