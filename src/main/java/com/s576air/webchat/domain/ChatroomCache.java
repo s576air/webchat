@@ -1,22 +1,24 @@
 package com.s576air.webchat.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class ChatroomCache {
-    private ReentrantLock lock;
-    // key: userId, value: sessionId
-    private Map<Long, Long> userSessions = new HashMap<>();
+    private final ReentrantLock lock = new ReentrantLock();
+    private String name;
+    // value: userId
+    private Set<Long> userIds = new HashSet<>();
     private ChatCache chatCache = new ChatCache();
 
-    public void addUserSession(Long userId, Long sessionId) {
+    public ChatroomCache(String name) {
+        this.name = name;
+    }
+
+    public void addUserId(Long userId) {
         lock.lock();
 
-        userSessions.put(userId, sessionId);
+        userIds.add(userId);
 
         lock.unlock();
     }
@@ -24,17 +26,17 @@ public class ChatroomCache {
     public boolean removeUserSession(Long userId) {
         lock.lock();
 
-        Long result = userSessions.remove(userId);
+        boolean result = userIds.remove(userId);
 
         lock.unlock();
 
-        return result != null;
+        return result;
     }
 
     public List<Long> getSessionIds() {
         lock.lock();
 
-        List<Long> sessionIds = new ArrayList<>(userSessions.values());
+        List<Long> sessionIds = new ArrayList<>(userIds);
 
         lock.unlock();
 
