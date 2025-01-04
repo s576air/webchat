@@ -1,6 +1,8 @@
 package com.s576air.webchat.service;
 
 import com.s576air.webchat.domain.SimpleChatroom;
+import com.s576air.webchat.domain.User;
+import com.s576air.webchat.domain.UserCache;
 import com.s576air.webchat.repository.ChatroomParticipantsRepository;
 import com.s576air.webchat.repository.ChatroomRepository;
 import com.s576air.webchat.repository.UserRepository;
@@ -17,16 +19,19 @@ public class UserService {
     private final UserRepository userRepository;
     private final ChatroomRepository chatroomRepository;
     private final ChatroomParticipantsRepository chatroomParticipantsRepository;
+    private final UsersCache usersCache;
 
     @Autowired
     public UserService(
         UserRepository userRepository,
         ChatroomRepository chatroomRepository,
-        ChatroomParticipantsRepository chatroomParticipantsRepository
+        ChatroomParticipantsRepository chatroomParticipantsRepository,
+        UsersCache usersCache
     ) {
         this.userRepository = userRepository;
         this.chatroomRepository = chatroomRepository;
         this.chatroomParticipantsRepository = chatroomParticipantsRepository;
+        this.usersCache = usersCache;
     }
 
     public boolean signUp(String login_id, String password) {
@@ -52,5 +57,17 @@ public class UserService {
         }
 
         return chatroomList;
+    }
+
+    public void cacheUser(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+            UserCache userCache = new UserCache(user.get().getName(), Optional.empty());
+            usersCache.insertUser(userId, userCache);
+        }
+    }
+
+    public void removeCacheUser(Long userId) {
+        usersCache.removeUser(userId);
     }
 }

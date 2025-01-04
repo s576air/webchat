@@ -62,6 +62,16 @@ public class UserRepository {
         }
     }
 
+    public Optional<User> findById(Long userId) {
+        String sql = "SELECT id, login_id, password_hash, name FROM users WHERE id = ?";
+        try {
+            User user = jdbcTemplate.queryForObject(sql, userRowMapper(), userId);
+            return Optional.ofNullable(user);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
     private RowMapper<User> userRowMapper() {
         return (rs, rowNum) -> new User(
             rs.getLong("id"),
