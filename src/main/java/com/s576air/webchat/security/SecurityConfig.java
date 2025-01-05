@@ -18,14 +18,17 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig {
     private final LoginDetailsService loginDetailsService;
     private final CustomAuthenticationSuccessHandler authenticationSuccessHandler;
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
 
     @Autowired
     public SecurityConfig(
         LoginDetailsService loginDetailsService,
-        CustomAuthenticationSuccessHandler authenticationSuccessHandler
+        CustomAuthenticationSuccessHandler authenticationSuccessHandler,
+        CustomLogoutSuccessHandler logoutSuccessHandler
     ) {
         this.loginDetailsService = loginDetailsService;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
+        this.logoutSuccessHandler = logoutSuccessHandler;
     }
 
     @Bean
@@ -41,6 +44,7 @@ public class SecurityConfig {
                 .successHandler(authenticationSuccessHandler))
             .logout(logout -> logout
                 .logoutUrl("/logout")
+                .logoutSuccessHandler(logoutSuccessHandler)
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID"))
             .sessionManagement(session -> session

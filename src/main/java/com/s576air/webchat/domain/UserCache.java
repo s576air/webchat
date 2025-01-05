@@ -4,9 +4,9 @@ import java.util.Optional;
 
 public class UserCache {
     private String name;
-    private Optional<Long> sessionId;
+    private Optional<String> sessionId;
 
-    public UserCache(String name, Optional<Long> sessionId) {
+    public UserCache(String name, Optional<String> sessionId) {
         this.name = name;
         this.sessionId = sessionId;
     }
@@ -15,7 +15,15 @@ public class UserCache {
         return name;
     }
 
-    public Optional<Long> getSessionId() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Optional<String> getSessionId() {
         return sessionId;
+    }
+
+    public void setSessionId(Optional<String> sessionId) {
+        this.sessionId = sessionId;
     }
 }

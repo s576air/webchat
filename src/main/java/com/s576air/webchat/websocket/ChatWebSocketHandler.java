@@ -7,6 +7,7 @@ import com.s576air.webchat.domain.CustomUserDetails;
 import com.s576air.webchat.dto.MessageRequestPayload;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
+import com.s576air.webchat.service.UsersCache;
 import com.s576air.webchat.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,16 +24,30 @@ import java.util.Optional;
 public class ChatWebSocketHandler implements WebSocketHandler {
     private final ChatService chatService;
     private final ChatroomService chatroomService;
+    private final UsersCache usersCache;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    public ChatWebSocketHandler(ChatService chatService, ChatroomService chatroomService) {
+    public ChatWebSocketHandler(
+        ChatService chatService,
+        ChatroomService chatroomService,
+        UsersCache usersCache
+    ) {
         this.chatService = chatService;
         this.chatroomService = chatroomService;
+        this.usersCache = usersCache;
     }
 
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {}
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        Authentication authentication = (Authentication) session.getAttributes().get("user");
+        if (authentication != null && authentication.isAuthenticated()) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Long userId = userDetails.getId();
+
+            usersCache.setSessionId(userId, Optional.of(session.getId()));
+        }
+    }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) throws Exception {
@@ -57,7 +72,15 @@ public class ChatWebSocketHandler implements WebSocketHandler {
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {}
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {}
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
+        Authentication authentication = (Authentication) session.getAttributes().get("user");
+        if (authentication != null && authentication.isAuthenticated()) {
+            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+            Long userId = userDetails.getId();
+
+            usersCache.setSessionId(userId, Optional.empty());
+        }
+    }
 
     @Override
     public boolean supportsPartialMessages() {
