@@ -29,5 +29,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         Long userId = userDetails.getId();
 
         userService.cacheUser(userId);
+
+        try {
+            response.sendRedirect("/friend-list");
+        } catch (Exception e) {
+            System.out.println("로그인 후, 친구 목록 페이지로의 연결 실패");
+        }
+
     }
 }

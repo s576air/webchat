@@ -40,8 +40,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated())
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/friend-list", true)
-                .successHandler(authenticationSuccessHandler))
+                .successHandler(authenticationSuccessHandler)
+            )
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(logoutSuccessHandler)
