@@ -23,8 +23,8 @@ public class ChatService {
         return chatRepository.addTextChat(chatroomId, userId, text);
     }
 
-    public Optional<List<Chat>> getChats(Long chatroomId, Timestamp time) {
-        return chatRepository.getChats(chatroomId, time, 2);
+    public Optional<List<Chat>> getChats(Long chatroomId, long id) {
+        return chatRepository.getChats(chatroomId, id, 2);
     }
 
     public Optional<List<Chat>> getLastChats(Long chatroomId) {

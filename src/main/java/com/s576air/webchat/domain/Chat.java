@@ -3,6 +3,7 @@ package com.s576air.webchat.domain;
 import java.time.LocalDateTime;
 
 public class Chat {
+    Long id;
     Long chatroomId;
     Long userId;
     // 비어 있으면 채팅 텍스트 아니면 확장자(txt, png, mp4 등)
@@ -13,12 +14,21 @@ public class Chat {
 
     public Chat() {}
 
-    public Chat(Long chatroomId, Long userId, String type, String content, LocalDateTime sentTime) {
+    public Chat(Long id, Long chatroomId, Long userId, String type, String content, LocalDateTime sentTime) {
+        this.id = id;
         this.chatroomId = chatroomId;
         this.userId = userId;
         this.type = type;
         this.content = content;
         this.sentTime = sentTime;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getChatroomId() {

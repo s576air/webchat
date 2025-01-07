@@ -105,18 +105,18 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         if (request.getType().equals("send")) {
             boolean result = chatService.saveTextMessage(request.getChatroomId(), userId, request.getText());
             if (result) {
-                // 성공적인 저장. 서비스에서 돌려가며 메시지 전송을 시도
+                // 서비스에서 돌려가며 메시지 전송을 시도
                 // chatService.getActiveUsers();
             }
             return Optional.empty();
         } else if (request.getType().equals("load")) {
-            LocalDateTime time;
+            long id;
             try {
-                time = LocalDateTime.parse(request.getText());
-            } catch (DateTimeException e) {
-                return Optional.of("{\"error\": \"시간 해석 실패\"}");
+                id = Long.parseLong(request.getText());
+            } catch (NumberFormatException e) {
+                return Optional.of("{\"error\": \"숫자 해석 실패\"}");
             }
-            Optional<List<Chat>> chats = chatService.getChats(request.getChatroomId(), Timestamp.valueOf(time));
+            Optional<List<Chat>> chats = chatService.getChats(request.getChatroomId(), id);
 
             if (chats.isPresent()) {
                 Optional<String> chatsJson = JsonUtil.toJson(chats.get());

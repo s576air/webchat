@@ -33,10 +33,10 @@ public class ChatRepository {
         return true;
     }
 
-    public Optional<List<Chat>> getChats(Long chatroomId, Timestamp time, int limit) {
-        String sql = "SELECT * FROM chat WHERE chatroom_id = ? AND sent_time < ? ORDER BY sent_time DESC LIMIT ?";
+    public Optional<List<Chat>> getChats(Long chatroomId, long id, int limit) {
+        String sql = "SELECT * FROM chat WHERE chatroom_id = ? AND id < ? ORDER BY id DESC LIMIT ?";
         try {
-            List<ChatBase> chatBases = jdbcTemplate.query(sql, ChatBaseRowMapper(), chatroomId, time, limit);
+            List<ChatBase> chatBases = jdbcTemplate.query(sql, ChatBaseRowMapper(), chatroomId, id, limit);
 
             List<ChatBase> textBases = new ArrayList<>();
             List<ChatBase> binaryBases = new ArrayList<>();
@@ -99,6 +99,7 @@ public class ChatRepository {
 
     private RowMapper<ChatBase> ChatBaseRowMapper() {
         return (rs, rowNum) -> new ChatBase(
+            rs.getLong("id"),
             rs.getLong("chatroom_id"),
             rs.getLong("user_id"),
             rs.getBoolean("is_text"),
@@ -126,7 +127,7 @@ public class ChatRepository {
 
         for (int i = 0; i < textBases.size(); i++) {
             ChatBase base = textBases.get(i);
-            chats.add(new Chat(base.getChatroomId(), base.getUserId(), "", texts.get(i), base.getSentTime()));
+            chats.add(new Chat(base.getId(), base.getChatroomId(), base.getUserId(), "", texts.get(i), base.getSentTime()));
         }
 
         return Optional.of(chats);
