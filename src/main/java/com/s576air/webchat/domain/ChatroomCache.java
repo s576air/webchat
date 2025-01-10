@@ -1,19 +1,17 @@
 package com.s576air.webchat.domain;
 
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class ChatroomCache {
     private final ReentrantLock lock = new ReentrantLock();
-    private String name;
     // value: userId
     private Set<Long> userIds = new HashSet<>();
     private ChatCache chatCache = new ChatCache();
+    private Timestamp time = new Timestamp(System.currentTimeMillis());
 
-    public ChatroomCache(String name) {
-        this.name = name;
-    }
 
     public void addUserId(Long userId) {
         lock.lock();

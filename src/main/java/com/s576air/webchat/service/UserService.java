@@ -43,11 +43,12 @@ public class UserService {
         return userRepository.insertUser(login_id, passwordHash, "default").isPresent();
     }
 
-    public List<SimpleChatroom> getSimpleChatroomList(Long user_id) {
-        List<Long> chatroomIdList = chatroomParticipantsRepository.findChatroomIdListByUserId(user_id);
-        List<SimpleChatroom> chatroomList = new ArrayList<>(chatroomIdList.size());
+    public List<SimpleChatroom> getSimpleChatroomList(Long userId) {
+        Optional<List<Long>> optionalChatroomIds = usersCache.getChatroomIdsByUserId(userId);
+        List<Long> chatroomIds = optionalChatroomIds.orElseGet(() -> chatroomParticipantsRepository.findChatroomIdListByUserId(userId));
+        List<SimpleChatroom> chatroomList = new ArrayList<>(chatroomIds.size());
 
-        for (Long chatroomId: chatroomIdList) {
+        for (Long chatroomId: chatroomIds) {
             Optional<String> name = chatroomRepository.getName(chatroomId);
 
             if (name.isPresent()) {
@@ -62,9 +63,18 @@ public class UserService {
     public void cacheUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
-            UserCache userCache = new UserCache(user.get().getName(), Optional.empty());
+            List<Long> chatroomIds = chatroomParticipantsRepository.findChatroomIdListByUserId(userId);
+            UserCache userCache = new UserCache(chatroomIds, Optional.empty());
             usersCache.insertUser(userId, userCache);
         }
+    }
+
+    public void cacheUserSessionId(Long userId, String sessionId) {
+        usersCache.setSessionId(userId, Optional.of(sessionId));
+    }
+
+    public void removeUserSessionId(Long userId) {
+        usersCache.setSessionId(userId, Optional.empty());
     }
 
     public void removeCacheUser(Long userId) {

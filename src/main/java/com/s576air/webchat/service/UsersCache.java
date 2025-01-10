@@ -3,6 +3,7 @@ package com.s576air.webchat.service;
 import com.s576air.webchat.domain.UserCache;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,5 +28,23 @@ public class UsersCache {
 
             return value;
         });
+    }
+
+    public Optional<List<Long>> getChatroomIdsByUserId(Long userId) {
+        UserCache userCache = cache.get(userId);
+        if (userCache == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(userCache.getChatroomIds());
+        }
+    }
+
+    public Optional<Boolean> isUserInChatroom(Long userId, Long chatroomId) {
+        UserCache userCache = cache.get(userId);
+        if (userCache == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(userCache.isInChatroom(chatroomId));
+        }
     }
 }

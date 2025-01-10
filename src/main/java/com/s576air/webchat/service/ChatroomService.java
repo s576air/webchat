@@ -11,15 +11,22 @@ import java.util.Optional;
 public class ChatroomService {
     private final ChatroomParticipantsRepository chatroomParticipantsRepository;
     private final ChatroomRepository chatroomRepository;
+    private final UsersCache usersCache;
 
     @Autowired
-    public ChatroomService(ChatroomParticipantsRepository chatroomParticipantsRepository, ChatroomRepository chatroomRepository) {
+    public ChatroomService(
+        ChatroomParticipantsRepository chatroomParticipantsRepository,
+        ChatroomRepository chatroomRepository,
+        UsersCache usersCache
+    ) {
         this.chatroomParticipantsRepository = chatroomParticipantsRepository;
         this.chatroomRepository = chatroomRepository;
+        this.usersCache = usersCache;
     }
 
     public boolean containsUser(Long chatroomId, Long userId) {
-        return chatroomParticipantsRepository.isUserInChatroom(chatroomId, userId);
+        Optional<Boolean> userInChatroom = usersCache.isUserInChatroom(chatroomId, userId);
+        return userInChatroom.orElseGet(() -> chatroomParticipantsRepository.isUserInChatroom(chatroomId, userId));
     }
 
     public Optional<String> getName(Long chatroomId) {

@@ -1,22 +1,14 @@
 package com.s576air.webchat.domain;
 
-import java.util.Optional;
+import java.util.*;
 
 public class UserCache {
-    private String name;
+    private Set<Long> chatroomIds;
     private Optional<String> sessionId;
 
-    public UserCache(String name, Optional<String> sessionId) {
-        this.name = name;
+    public UserCache(List<Long> chatroomIds, Optional<String> sessionId) {
+        this.chatroomIds = new HashSet<>(chatroomIds);
         this.sessionId = sessionId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Optional<String> getSessionId() {
@@ -25,5 +17,13 @@ public class UserCache {
 
     public void setSessionId(Optional<String> sessionId) {
         this.sessionId = sessionId;
+    }
+
+    public List<Long> getChatroomIds() {
+        return new ArrayList<>(chatroomIds);
+    }
+
+    public boolean isInChatroom(Long chatroomId) {
+        return chatroomIds.contains(chatroomId);
     }
 }
