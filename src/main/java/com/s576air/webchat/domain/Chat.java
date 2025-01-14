@@ -6,7 +6,7 @@ public class Chat {
     Long id;
     Long chatroomId;
     Long userId;
-    // 비어 있으면 채팅 텍스트 아니면 확장자(txt, png, mp4 등)
+    // 비어 있으면 채팅 텍스트, 아니면 확장자(txt, png, mp4 등)
     String type;
     // 텍스트는 채팅, 확장자는 url 표시
     String content;

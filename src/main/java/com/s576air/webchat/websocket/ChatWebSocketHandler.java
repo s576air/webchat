@@ -104,10 +104,10 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         }
 
         if (request.getType().equals("send")) {
-            boolean result = chatService.saveTextMessage(request.getChatroomId(), userId, request.getText());
-            if (result) {
-                // 서비스에서 돌려가며 메시지 전송을 시도
-                // chatService.getActiveUsers();
+            Long chatroomId = request.getChatroomId();
+            if (chatroomService.containsUser(chatroomId, userId)) {
+                chatService.saveTextMessage(chatroomId, userId, request.getText());
+                // 같은 채팅방의 다른 유저에게 메시지 전송하는 기능 추가바람
             }
             return Optional.empty();
         } else if (request.getType().equals("load")) {

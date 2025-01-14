@@ -40,4 +40,14 @@ public class ChatroomCache {
 
         return sessionIds;
     }
+
+    public Optional<List<Chat>> addAndFlush(Chat chat) {
+        lock.lock();
+
+        Optional<List<Chat>> chats = chatCache.addAndFlush(chat);
+
+        lock.unlock();
+
+        return chats;
+    }
 }
