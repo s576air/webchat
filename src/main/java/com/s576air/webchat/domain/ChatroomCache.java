@@ -8,10 +8,13 @@ import java.util.stream.Collectors;
 public class ChatroomCache {
     private final ReentrantLock lock = new ReentrantLock();
     // value: userId
-    private Set<Long> userIds = new HashSet<>();
+    private Set<Long> userIds;
     private ChatCache chatCache = new ChatCache();
     private Timestamp time = new Timestamp(System.currentTimeMillis());
 
+    public ChatroomCache(List<Long> userIds) {
+        this.userIds = new HashSet<>(userIds);
+    }
 
     public void addUserId(Long userId) {
         lock.lock();
@@ -41,13 +44,11 @@ public class ChatroomCache {
         return sessionIds;
     }
 
-    public Optional<List<Chat>> addAndFlush(Chat chat) {
+    public void add(Chat chat) {
         lock.lock();
 
-        Optional<List<Chat>> chats = chatCache.addAndFlush(chat);
+        chatCache.add(chat);
 
         lock.unlock();
-
-        return chats;
     }
 }

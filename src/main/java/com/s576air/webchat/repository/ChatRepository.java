@@ -24,15 +24,6 @@ public class ChatRepository {
         this.textChatRepository = textChatRepository;
     }
 
-    public boolean addChat(Chat chat) {
-        if (chat.getType().isEmpty()) {
-            return addTextChat(chat.getChatroomId(), chat.getUserId(), chat.getContent());
-        } else {
-            // addDataChat 추가 바람
-            return false;
-        }
-    }
-
     public boolean addTextChat(Long chatroomId, Long userId, String text) {
         Optional<Long> textChatId = textChatRepository.insert(text);
         if (textChatId.isEmpty()) { return false; }

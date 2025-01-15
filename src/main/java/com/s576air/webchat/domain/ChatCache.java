@@ -7,8 +7,8 @@ import java.util.Optional;
 public class ChatCache {
     private ArrayList<Chat> chats = new ArrayList<>();
 
-    public Optional<List<Chat>> addAndFlush(Chat chat) {
-        // chat id 갱신
+    public void add(Chat chat) {
+        // chat id를 임시 값으로 갱신
         int size = chats.size();
         Long id;
         if (size == 0) {
@@ -18,13 +18,5 @@ public class ChatCache {
         }
         chat.setId(id);
         chats.add(chat);
-
-        if (size > 10) {
-            List<Chat> list = chats;
-            chats = new ArrayList<>();
-            return Optional.of(list);
-        } else {
-            return Optional.empty();
-        }
     }
 }

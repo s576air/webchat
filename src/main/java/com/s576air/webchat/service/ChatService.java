@@ -2,7 +2,6 @@ package com.s576air.webchat.service;
 
 import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.repository.ChatRepository;
-import com.s576air.webchat.repository.ChatroomParticipantsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,12 +20,9 @@ public class ChatService {
     }
 
     public void saveTextMessage(Long chatroomId, Long userId, String text) {
-        Optional<List<Chat>> chats = chatroomsCache.addTextChatAndFlushChats(chatroomId, userId, text);
-        if (chats.isPresent()) {
-            for (Chat chat : chats.get()) {
-                chatRepository.addChat(chat);
-            }
-        }
+        chatroomsCache.addChatroom(chatroomId);
+        chatroomsCache.addTextChat(chatroomId, userId, text);
+        chatRepository.addTextChat(chatroomId, userId, text);
     }
 
     public Optional<List<Chat>> getChats(Long chatroomId, long id) {

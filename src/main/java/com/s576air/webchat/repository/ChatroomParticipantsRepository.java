@@ -23,10 +23,10 @@ public class ChatroomParticipantsRepository {
         return updatedRows >= 1;
     }
 
-    public List<Long> findChatroomIdListByUserId(Long id) {
+    public List<Long> findChatroomIdListByUserId(Long userId) {
         String sql = "SELECT chatroom_id FROM chatroom_participants WHERE user_id = ?";
         try {
-            return jdbcTemplate.query(sql, ChatroomIdRowMapper(), id);
+            return jdbcTemplate.query(sql, ChatroomIdRowMapper(), userId);
         } catch (Exception e) {
             System.out.println("findChatroomListByUserId error: " + e.getMessage());
             return Collections.emptyList();
@@ -35,6 +35,20 @@ public class ChatroomParticipantsRepository {
 
     private RowMapper<Long> ChatroomIdRowMapper() {
         return (rs, rowNum) -> rs.getLong("chatroom_id");
+    }
+
+    public List<Long> findUserIdListByChatroomId(Long chatroomId) {
+        String sql = "SELECT user_id FROM chatroom_participants WHERE chatroom_id = ?";
+        try {
+            return jdbcTemplate.query(sql, UserIdRowMapper(), chatroomId);
+        } catch (Exception e) {
+            System.out.println("findUserIdListByChatroomId error: " + e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
+    private RowMapper<Long> UserIdRowMapper() {
+        return (rs, rowNum) -> rs.getLong("user_id");
     }
 
     public boolean isUserInChatroom(Long chatroomId, Long userId) {
