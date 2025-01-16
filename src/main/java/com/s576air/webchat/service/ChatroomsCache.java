@@ -28,6 +28,13 @@ public class ChatroomsCache {
         }
     }
 
+    public void removeChatroomIfIdle(Long chatroomId) {
+        ChatroomCache chatroomCache = cache.get(chatroomId);
+        if (chatroomCache != null && chatroomCache.isIdle()) {
+            cache.remove(chatroomId);
+        }
+    }
+
     public void addTextChat(Long chatroomId, Long userId, String text) {
         ChatroomCache chatroomCache = cache.get(chatroomId);
         if (chatroomCache != null) {

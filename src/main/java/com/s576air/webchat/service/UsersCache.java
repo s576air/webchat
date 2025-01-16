@@ -47,4 +47,23 @@ public class UsersCache {
             return Optional.of(userCache.isInChatroom(chatroomId));
         }
     }
+
+    public void addUsedChatroomId(Long userId, Long chatroomId) {
+        cache.compute(userId, (key, value) -> {
+            if (value != null) {
+                value.addUsedChatroomId(chatroomId);
+            }
+
+            return value;
+        });
+    }
+
+    public Optional<List<Long>> getUsedChatroomIds(Long userId) {
+        UserCache userCache = cache.get(userId);
+        if (userCache == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(userCache.getUsedChatroomIds());
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.domain.CustomUserDetails;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
+import com.s576air.webchat.service.UsersCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,11 +21,13 @@ import java.util.Optional;
 public class ChatroomController {
     private final ChatroomService chatroomService;
     private final ChatService chatService;
+    private final UsersCache usersCache;
 
     @Autowired
-    public ChatroomController(ChatroomService chatroomService, ChatService chatService) {
+    public ChatroomController(ChatroomService chatroomService, ChatService chatService, UsersCache usersCache) {
         this.chatroomService = chatroomService;
         this.chatService = chatService;
+        this.usersCache = usersCache;
     }
 
     @PostMapping("chatroom")
@@ -40,6 +43,8 @@ public class ChatroomController {
             chatroomName.isPresent() &&
             chats.isPresent()
         ) {
+            usersCache.addUsedChatroomId(userId, chatroomId);
+
             List<Chat> chats2 = chats.get();
             Collections.reverse(chats2);
             model.addAttribute("id", chatroomId);

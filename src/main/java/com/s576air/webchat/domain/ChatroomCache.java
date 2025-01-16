@@ -1,13 +1,13 @@
 package com.s576air.webchat.domain;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class ChatroomCache {
     private final ReentrantLock lock = new ReentrantLock();
-    // value: userId
     private Set<Long> userIds;
     private ChatCache chatCache = new ChatCache();
     private Timestamp time = new Timestamp(System.currentTimeMillis());
@@ -45,10 +45,26 @@ public class ChatroomCache {
     }
 
     public void add(Chat chat) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+
         lock.lock();
 
+        time = now;
         chatCache.add(chat);
 
         lock.unlock();
+    }
+
+    public boolean isIdle() {
+        long now = new Timestamp(System.currentTimeMillis()).getTime();
+
+        lock.lock();
+
+        long duration = now - time.getTime();
+
+        lock.unlock();
+
+        long idleDuration = 20 * 60 * 1000;
+        return duration > idleDuration;
     }
 }

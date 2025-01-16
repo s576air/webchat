@@ -4,10 +4,12 @@ import java.util.*;
 
 public class UserCache {
     private Set<Long> chatroomIds;
+    private Set<Long> usedChatroomIds;
     private Optional<String> sessionId;
 
     public UserCache(List<Long> chatroomIds, Optional<String> sessionId) {
         this.chatroomIds = new HashSet<>(chatroomIds);
+        this.usedChatroomIds = new HashSet<>();
         this.sessionId = sessionId;
     }
 
@@ -25,5 +27,13 @@ public class UserCache {
 
     public boolean isInChatroom(Long chatroomId) {
         return chatroomIds.contains(chatroomId);
+    }
+
+    public void addUsedChatroomId(Long chatroomId) {
+        usedChatroomIds.add(chatroomId);
+    }
+
+    public List<Long> getUsedChatroomIds() {
+        return new ArrayList<>(usedChatroomIds);
     }
 }
