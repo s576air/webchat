@@ -5,8 +5,12 @@ import com.s576air.webchat.dto.ChatBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,19 +28,34 @@ public class ChatRepository {
         this.textChatRepository = textChatRepository;
     }
 
-    public boolean addTextChat(Long chatroomId, Long userId, String text) {
+    public Optional<Long> addTextChat(Long chatroomId, Long userId, String text) {
         Optional<Long> textChatId = textChatRepository.insert(text);
-        if (textChatId.isEmpty()) { return false; }
+        if (textChatId.isEmpty()) { return Optional.empty(); }
         String sql = "INSERT INTO chat(chatroom_id, user_id, is_text, content_id, sent_time) VALUES(?, ?, ?, ?, ?)";
         Timestamp time = new Timestamp(new Date().getTime()); // 정밀도 ms
-        jdbcTemplate.update(sql, chatroomId, userId, true, textChatId.get(), time);
-        return true;
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(conn -> {
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, chatroomId);
+            ps.setLong(2, userId);
+            ps.setBoolean(3, true);
+            ps.setLong(4, textChatId.get());
+            ps.setTimestamp(5, time);
+            return ps;
+        }, keyHolder);
+
+        try {
+            Long id = ((Number) keyHolder.getKeys().get("id")).longValue();
+            return Optional.of(id);
+        } catch (NullPointerException e) {
+            return Optional.empty();
+        }
     }
 
-    public Optional<List<Chat>> getChats(Long chatroomId, long id, int limit) {
+    public Optional<List<Chat>> getChats(Long chatroomId, long chatId, int limit) {
         String sql = "SELECT * FROM chat WHERE chatroom_id = ? AND id < ? ORDER BY id DESC LIMIT ?";
         try {
-            List<ChatBase> chatBases = jdbcTemplate.query(sql, ChatBaseRowMapper(), chatroomId, id, limit);
+            List<ChatBase> chatBases = jdbcTemplate.query(sql, ChatBaseRowMapper(), chatroomId, chatId, limit);
 
             List<ChatBase> textBases = new ArrayList<>();
             List<ChatBase> binaryBases = new ArrayList<>();

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -35,12 +36,21 @@ public class ChatroomsCache {
         }
     }
 
-    public void addTextChat(Long chatroomId, Long userId, String text) {
+    public void addTextChat(Long chatroomId, Long userId, String text, Long id) {
         ChatroomCache chatroomCache = cache.get(chatroomId);
         if (chatroomCache != null) {
-            Chat chat = new Chat(0L, chatroomId, userId, "", text, LocalDateTime.now());
+            Chat chat = new Chat(id, chatroomId, userId, "", text, LocalDateTime.now());
 
             chatroomCache.add(chat);
+        }
+    }
+
+    public Optional<List<Chat>> getChats(Long chatroomId, Long chatId, int limit) {
+        ChatroomCache chatroomCache = cache.get(chatroomId);
+        if (chatroomCache == null) {
+            return Optional.empty();
+        } else {
+            return chatroomCache.getChats(chatId, limit);
         }
     }
 }

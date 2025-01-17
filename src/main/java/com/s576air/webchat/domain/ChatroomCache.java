@@ -55,6 +55,10 @@ public class ChatroomCache {
         lock.unlock();
     }
 
+    public Optional<List<Chat>> getChats(Long chatId, int limit) {
+        return chatCache.getChats(chatId, limit);
+    }
+
     public boolean isIdle() {
         long now = new Timestamp(System.currentTimeMillis()).getTime();
 

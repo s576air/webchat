@@ -20,13 +20,16 @@ public class ChatService {
     }
 
     public void saveTextMessage(Long chatroomId, Long userId, String text) {
-        chatroomsCache.addChatroom(chatroomId);
-        chatroomsCache.addTextChat(chatroomId, userId, text);
-        chatRepository.addTextChat(chatroomId, userId, text);
+        Optional<Long> chatId = chatRepository.addTextChat(chatroomId, userId, text);
+        if (chatId.isPresent()) {
+            chatroomsCache.addChatroom(chatroomId);
+            chatroomsCache.addTextChat(chatroomId, userId, text, chatId.get());
+        }
     }
 
-    public Optional<List<Chat>> getChats(Long chatroomId, long id) {
-        return chatRepository.getChats(chatroomId, id, 2);
+    public Optional<List<Chat>> getChats(Long chatroomId, Long chatId) {
+        chatroomsCache.getChats(chatroomId, chatId, 2);
+        return chatRepository.getChats(chatroomId, chatId, 2);
     }
 
     public Optional<List<Chat>> getLastChats(Long chatroomId) {
