@@ -1,5 +1,6 @@
 package com.s576air.webchat.dto;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class ChatBase {
@@ -8,9 +9,9 @@ public class ChatBase {
     private Long userId;
     private boolean isText;
     private Long contentId;
-    private LocalDateTime sentTime;
+    private Timestamp sentTime;
 
-    public ChatBase(Long id, Long chatroomId, Long userId, boolean isText, Long contentId, LocalDateTime sentTime) {
+    public ChatBase(Long id, Long chatroomId, Long userId, boolean isText, Long contentId, Timestamp sentTime) {
         this.id = id;
         this.chatroomId = chatroomId;
         this.userId = userId;
@@ -59,11 +60,11 @@ public class ChatBase {
         this.contentId = contentId;
     }
 
-    public LocalDateTime getSentTime() {
+    public Timestamp getSentTime() {
         return sentTime;
     }
 
-    public void setSentTime(LocalDateTime sentTime) {
+    public void setSentTime(Timestamp sentTime) {
         this.sentTime = sentTime;
     }
 }

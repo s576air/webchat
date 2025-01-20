@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 @Component
 public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
@@ -52,19 +55,19 @@ public class DataInitializer implements CommandLineRunner {
             chatroomParticipantsRepository.insert(chatroomId2, userId3);
 
             // 채팅 추가
-            chatRepository.addTextChat(chatroomId1, userId1, "나는 user1이야. 첫 메시지네. 잘 부탁해.");
+            chatRepository.addTextChat(chatroomId1, userId1, "나는 user1이야. 첫 메시지네. 잘 부탁해.", new Timestamp(new Date().getTime()));
             Thread.sleep(1);
-            chatRepository.addTextChat(chatroomId1, userId2, "나는 user2야. 나도 잘 부탁해.");
+            chatRepository.addTextChat(chatroomId1, userId2, "나는 user2야. 나도 잘 부탁해.", new Timestamp(new Date().getTime()));
             Thread.sleep(1);
-            chatRepository.addTextChat(chatroomId1, userId2, "세번째 메시지!");
+            chatRepository.addTextChat(chatroomId1, userId2, "세번째 메시지!", new Timestamp(new Date().getTime()));
             Thread.sleep(1);
-            chatRepository.addTextChat(chatroomId1, userId2, "마지막 메시지!");
+            chatRepository.addTextChat(chatroomId1, userId2, "마지막 메시지!", new Timestamp(new Date().getTime()));
 
-            chatRepository.addTextChat(chatroomId2, userId1, "내가 처음이다!");
+            chatRepository.addTextChat(chatroomId2, userId1, "내가 처음이다!", new Timestamp(new Date().getTime()));
             Thread.sleep(1);
-            chatRepository.addTextChat(chatroomId2, userId2, "나는 두번째네..");
+            chatRepository.addTextChat(chatroomId2, userId2, "나는 두번째네..", new Timestamp(new Date().getTime()));
             Thread.sleep(1);
-            chatRepository.addTextChat(chatroomId2, userId3, "내가 꼴찌네");
+            chatRepository.addTextChat(chatroomId2, userId3, "내가 꼴찌네", new Timestamp(new Date().getTime()));
 
             System.out.println("데이터 초기화 완료");
         }

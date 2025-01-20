@@ -28,11 +28,10 @@ public class ChatRepository {
         this.textChatRepository = textChatRepository;
     }
 
-    public Optional<Long> addTextChat(Long chatroomId, Long userId, String text) {
+    public Optional<Long> addTextChat(Long chatroomId, Long userId, String text, Timestamp time) {
         Optional<Long> textChatId = textChatRepository.insert(text);
         if (textChatId.isEmpty()) { return Optional.empty(); }
         String sql = "INSERT INTO chat(chatroom_id, user_id, is_text, content_id, sent_time) VALUES(?, ?, ?, ?, ?)";
-        Timestamp time = new Timestamp(new Date().getTime()); // 정밀도 ms
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -123,7 +122,7 @@ public class ChatRepository {
             rs.getLong("user_id"),
             rs.getBoolean("is_text"),
             rs.getLong("content_id"),
-            rs.getTimestamp("sent_time").toLocalDateTime()
+            rs.getTimestamp("sent_time")
         );
     }
 

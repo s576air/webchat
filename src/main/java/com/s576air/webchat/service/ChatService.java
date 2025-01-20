@@ -5,6 +5,9 @@ import com.s576air.webchat.repository.ChatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,10 +23,12 @@ public class ChatService {
     }
 
     public void saveTextMessage(Long chatroomId, Long userId, String text) {
-        Optional<Long> chatId = chatRepository.addTextChat(chatroomId, userId, text);
+        Timestamp time = new Timestamp(new Date().getTime());
+        Optional<Long> chatId = chatRepository.addTextChat(chatroomId, userId, text, time);
         if (chatId.isPresent()) {
             chatroomsCache.addChatroom(chatroomId);
-            chatroomsCache.addTextChat(chatroomId, userId, text, chatId.get());
+            Chat chat = Chat.textChat(chatId.get(), chatroomId, userId, text, time);
+            chatroomsCache.addTextChat(chatroomId, userId, text, chatId.get(), time);
         }
     }
 

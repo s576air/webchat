@@ -6,7 +6,7 @@ import com.s576air.webchat.repository.ChatroomParticipantsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,10 +36,10 @@ public class ChatroomsCache {
         }
     }
 
-    public void addTextChat(Long chatroomId, Long userId, String text, Long id) {
+    public void addTextChat(Long chatroomId, Long userId, String text, Long id, Timestamp time) {
         ChatroomCache chatroomCache = cache.get(chatroomId);
         if (chatroomCache != null) {
-            Chat chat = new Chat(id, chatroomId, userId, "", text, LocalDateTime.now());
+            Chat chat = new Chat(id, chatroomId, userId, "", text, time);
 
             chatroomCache.add(chat);
         }
