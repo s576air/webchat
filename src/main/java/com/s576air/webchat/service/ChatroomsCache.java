@@ -36,11 +36,9 @@ public class ChatroomsCache {
         }
     }
 
-    public void addTextChat(Long chatroomId, Long userId, String text, Long id, Timestamp time) {
-        ChatroomCache chatroomCache = cache.get(chatroomId);
+    public void addChat(Chat chat) {
+        ChatroomCache chatroomCache = cache.get(chat.getChatroomId());
         if (chatroomCache != null) {
-            Chat chat = new Chat(id, chatroomId, userId, "", text, time);
-
             chatroomCache.add(chat);
         }
     }
@@ -51,6 +49,15 @@ public class ChatroomsCache {
             return Optional.empty();
         } else {
             return chatroomCache.getChats(chatId, limit);
+        }
+    }
+
+    public Optional<List<Long>> getUserIds(Long chatroomId) {
+        ChatroomCache chatroomCache = cache.get(chatroomId);
+        if (chatroomCache == null) {
+            return Optional.empty();
+        } else {
+            return Optional.of(chatroomCache.getUserIds());
         }
     }
 }

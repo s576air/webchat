@@ -34,14 +34,14 @@ public class ChatroomCache {
         return result;
     }
 
-    public List<Long> getSessionIds() {
+    public List<Long> getUserIds() {
         lock.lock();
 
-        List<Long> sessionIds = new ArrayList<>(userIds);
+        List<Long> userIds = new ArrayList<>(userIds);
 
         lock.unlock();
 
-        return sessionIds;
+        return userIds;
     }
 
     public void add(Chat chat) {

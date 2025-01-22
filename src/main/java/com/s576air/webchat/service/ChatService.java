@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +27,15 @@ public class ChatService {
         if (chatId.isPresent()) {
             chatroomsCache.addChatroom(chatroomId);
             Chat chat = Chat.textChat(chatId.get(), chatroomId, userId, text, time);
-            chatroomsCache.addTextChat(chatroomId, userId, text, chatId.get(), time);
+            chatroomsCache.addChat(chat);
+            //
+        }
+    }
+
+    public void sendMessage(Long chatroomId) {
+        Optional<List<Long>> userIds = chatroomsCache.getUserIds(chatroomId);
+        if (userIds != null) {
+            //
         }
     }
 
