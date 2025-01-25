@@ -2,6 +2,7 @@ package com.s576air.webchat.service;
 
 import com.s576air.webchat.domain.UserCache;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,10 +21,19 @@ public class UsersCache {
         cache.remove(userId);
     }
 
-    public void setSessionId(Long userId, Optional<String> sessionId) {
+    public Optional<WebSocketSession> getSession(Long userId) {
+        UserCache userCache = cache.get(userId);
+        if (userCache == null) {
+            return Optional.empty();
+        } else {
+            return userCache.getSession();
+        }
+    }
+
+    public void setSession(Long userId, Optional<WebSocketSession> session) {
         cache.compute(userId, (key, value) -> {
             if (value != null) {
-                value.setSessionId(sessionId);
+                value.setSession(session);
             }
 
             return value;

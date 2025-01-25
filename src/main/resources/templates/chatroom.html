@@ -35,7 +35,7 @@
                 outerDiv.appendChild(chat);
                 outerDiv.appendChild(chatInfo);
 
-                chatsDiv.append(outerDiv);
+                chatsDiv.appendChild(outerDiv);
             } else {
                 const messages = data;
                 const chatsDiv = document.getElementById('chats');
@@ -115,7 +115,7 @@
 
 <div th:each="chat: ${chats}" id="chats"><div>
     <div class="chat" th:if="${chat.type.isEmpty()}" th:text="${chat.content}">Default</div>
-    <div class="chat-info" th:text="'유저id: ' + ${chat.userId} + ', 시간: ' + ${#temporals.format(chat.sentTime, timeExpr)}">Default chat-info</div>
+    <div class="chat-info" th:text="'유저id: ' + ${chat.userId} + ', 시간: ' + ${#dates.format(chat.sentTime, 'yyyy-MM-dd HH:mm:ss.SSS')}">Default chat-info</div>
 </div></div>
 
 <label for="userInput">메시지:</label>

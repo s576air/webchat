@@ -1,24 +1,26 @@
 package com.s576air.webchat.domain;
 
+import org.springframework.web.socket.WebSocketSession;
+
 import java.util.*;
 
 public class UserCache {
     private Set<Long> chatroomIds;
     private Set<Long> usedChatroomIds;
-    private Optional<String> sessionId;
+    private Optional<WebSocketSession> session;
 
-    public UserCache(List<Long> chatroomIds, Optional<String> sessionId) {
+    public UserCache(List<Long> chatroomIds, Optional<WebSocketSession> session) {
         this.chatroomIds = new HashSet<>(chatroomIds);
         this.usedChatroomIds = new HashSet<>();
-        this.sessionId = sessionId;
+        this.session = session;
     }
 
-    public Optional<String> getSessionId() {
-        return sessionId;
+    public Optional<WebSocketSession> getSession() {
+        return session;
     }
 
-    public void setSessionId(Optional<String> sessionId) {
-        this.sessionId = sessionId;
+    public void setSession(Optional<WebSocketSession> session) {
+        this.session = session;
     }
 
     public List<Long> getChatroomIds() {

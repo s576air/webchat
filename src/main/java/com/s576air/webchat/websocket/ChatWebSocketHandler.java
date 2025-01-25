@@ -8,16 +8,13 @@ import com.s576air.webchat.dto.MessageRequestPayload;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
 import com.s576air.webchat.service.UserService;
-import com.s576air.webchat.service.UsersCache;
 import com.s576air.webchat.util.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.*;
 
-import java.sql.Timestamp;
-import java.time.DateTimeException;
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +36,15 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         this.userService = userService;
     }
 
+    public static void sendTextChat(WebSocketSession session, Chat chat) throws IOException {
+        if (session != null && session.isOpen()) {
+            Optional<String> chatJson = JsonUtil.toJson(chat);
+            if (chatJson.isPresent()) {
+                session.sendMessage(new TextMessage(chatJson.get()));
+            }
+        }
+    }
+
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         Authentication authentication = (Authentication) session.getAttributes().get("user");
@@ -46,7 +52,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             Long userId = userDetails.getId();
 
-            userService.cacheUserSessionId(userId, session.getId());
+            userService.cacheUserSession(userId, session);
         }
     }
 
@@ -79,7 +85,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             Long userId = userDetails.getId();
 
-            userService.removeUserSessionId(userId);
+            userService.removeUserSession(userId);
         }
     }
 

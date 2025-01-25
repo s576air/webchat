@@ -36,10 +36,13 @@ public class ChatroomsCache {
         }
     }
 
-    public void addChat(Chat chat) {
+    public boolean addChat(Chat chat) {
         ChatroomCache chatroomCache = cache.get(chat.getChatroomId());
-        if (chatroomCache != null) {
+        if (chatroomCache == null) {
+            return false;
+        } else {
             chatroomCache.add(chat);
+            return true;
         }
     }
 

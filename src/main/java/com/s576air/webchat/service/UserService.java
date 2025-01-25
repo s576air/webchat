@@ -9,6 +9,7 @@ import com.s576air.webchat.repository.UserRepository;
 import com.s576air.webchat.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.WebSocketSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,12 +70,12 @@ public class UserService {
         }
     }
 
-    public void cacheUserSessionId(Long userId, String sessionId) {
-        usersCache.setSessionId(userId, Optional.of(sessionId));
+    public void cacheUserSession(Long userId, WebSocketSession sessionId) {
+        usersCache.setSession(userId, Optional.of(sessionId));
     }
 
-    public void removeUserSessionId(Long userId) {
-        usersCache.setSessionId(userId, Optional.empty());
+    public void removeUserSession(Long userId) {
+        usersCache.setSession(userId, Optional.empty());
     }
 
     public void removeCacheUser(Long userId) {

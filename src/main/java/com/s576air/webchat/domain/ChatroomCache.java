@@ -37,11 +37,11 @@ public class ChatroomCache {
     public List<Long> getUserIds() {
         lock.lock();
 
-        List<Long> userIds = new ArrayList<>(userIds);
+        List<Long> arrayUserIds = new ArrayList<>(userIds);
 
         lock.unlock();
 
-        return userIds;
+        return arrayUserIds;
     }
 
     public void add(Chat chat) {
