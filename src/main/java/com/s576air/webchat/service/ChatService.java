@@ -38,15 +38,21 @@ public class ChatService {
 
         if (!result) { return; }
 
-        Optional<WebSocketSession> session = usersCache.getSession(userId);
+        Optional<List<Long>> userIds = chatroomsCache.getUserIds(chatroomId);
 
-        if (session.isEmpty()) { return; }
+        if (userIds.isEmpty()) { return; }
 
-        try {
-            ChatWebSocketHandler.sendTextChat(session.get(), chat);
-        } catch (IOException e) {
-            System.out.println("ChatWebSocketHandler.sendTextChat error: " + e.getMessage());
-        }
+        userIds.get()
+            .forEach(chatroomUserId -> {
+                usersCache.getSession(chatroomUserId).ifPresent(session -> {
+                    ChatWebSocketHandler.sendTextChat(session, chat);
+                });
+            });
+        //Optional<WebSocketSession> session = usersCache.getSession(userId);
+
+        //if (session.isEmpty()) { return; }
+
+        //ChatWebSocketHandler.sendTextChat(session.get(), chat);
     }
 
     public Optional<List<Chat>> getChats(Long chatroomId, Long chatId) {

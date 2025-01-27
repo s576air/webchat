@@ -87,7 +87,9 @@
             });
 
             document.getElementById('send').addEventListener('click', () => {
-                const userInput = document.getElementById('userInput').value;
+                const userInputDiv = document.getElementById('userInput');
+                const userInput = userInputDiv.value;
+                userInputDiv.value = '';
 
                 if (userInput) {
                     const message = {

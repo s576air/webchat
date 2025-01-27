@@ -36,11 +36,15 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         this.userService = userService;
     }
 
-    public static void sendTextChat(WebSocketSession session, Chat chat) throws IOException {
+    public static void sendTextChat(WebSocketSession session, Chat chat) {
         if (session != null && session.isOpen()) {
             Optional<String> chatJson = JsonUtil.toJson(chat);
             if (chatJson.isPresent()) {
-                session.sendMessage(new TextMessage(chatJson.get()));
+                try {
+                    session.sendMessage(new TextMessage(chatJson.get()));
+                } catch (IOException e) {
+                    System.out.println("session.sendMessage error: " + e.getMessage());
+                }
             }
         }
     }
