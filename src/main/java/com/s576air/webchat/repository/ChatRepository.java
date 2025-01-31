@@ -13,7 +13,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +20,17 @@ import java.util.Optional;
 public class ChatRepository {
     private final JdbcTemplate jdbcTemplate;
     private final TextChatRepository textChatRepository;
+    private final DataChatRepository dataChatRepository;
 
     @Autowired
-    public ChatRepository(JdbcTemplate jdbcTemplate, TextChatRepository textChatRepository) {
+    public ChatRepository(JdbcTemplate jdbcTemplate, TextChatRepository textChatRepository, DataChatRepository dataChatRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.textChatRepository = textChatRepository;
+        this.dataChatRepository = dataChatRepository;
+    }
+
+    public Optional<Long> addDataChat(Long chatroomId, Long userId, Timestamp time) {
+        return Optional.empty();
     }
 
     public Optional<Long> addTextChat(Long chatroomId, Long userId, String text, Timestamp time) {

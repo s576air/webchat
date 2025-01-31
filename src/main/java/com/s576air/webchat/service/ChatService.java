@@ -48,11 +48,6 @@ public class ChatService {
                     ChatWebSocketHandler.sendTextChat(session, chat);
                 });
             });
-        //Optional<WebSocketSession> session = usersCache.getSession(userId);
-
-        //if (session.isEmpty()) { return; }
-
-        //ChatWebSocketHandler.sendTextChat(session.get(), chat);
     }
 
     public Optional<List<Chat>> getChats(Long chatroomId, Long chatId) {

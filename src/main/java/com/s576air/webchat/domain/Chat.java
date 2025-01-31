@@ -1,8 +1,6 @@
 package com.s576air.webchat.domain;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Chat {
     Long id;
@@ -12,7 +10,7 @@ public class Chat {
     String type;
     // 텍스트는 채팅, 확장자는 url 표시
     String content;
-    Date sentTime;
+    Timestamp sentTime;
 
     public Chat() {}
 
@@ -76,11 +74,7 @@ public class Chat {
         this.userId = userId;
     }
 
-    public Timestamp getTimestampSentTime() {
-        return (Timestamp) sentTime;
-    }
-
-    public Date getSentTime() {
+    public Timestamp getSentTime() {
         return sentTime;
     }
 
