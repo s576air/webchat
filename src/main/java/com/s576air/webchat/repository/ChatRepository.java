@@ -1,6 +1,7 @@
 package com.s576air.webchat.repository;
 
 import com.s576air.webchat.domain.Chat;
+import com.s576air.webchat.domain.ChatData;
 import com.s576air.webchat.dto.ChatBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -29,8 +30,27 @@ public class ChatRepository {
         this.dataChatRepository = dataChatRepository;
     }
 
-    public Optional<Long> addDataChat(Long chatroomId, Long userId, Timestamp time) {
-        return Optional.empty();
+    public Optional<Long> addDataChat(Long chatroomId, Long userId, ChatData chatData, Timestamp time) {
+        Optional<Long> dataChatId = dataChatRepository.insert(chatData);
+        if (dataChatId.isEmpty()) { return Optional.empty(); }
+        String sql = "INSERT INTO chat(chatroom_id, user_id, is_text, content_id, sent_time) VALUES(?, ?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(conn -> {
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setLong(1, chatroomId);
+            ps.setLong(2, userId);
+            ps.setBoolean(3, false);
+            ps.setLong(4, dataChatId.get());
+            ps.setTimestamp(5, time);
+            return ps;
+        });
+
+        try {
+            Long id = ((Number) keyHolder.getKeys().get("id")).longValue();
+            return Optional.of(id);
+        } catch (NullPointerException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Long> addTextChat(Long chatroomId, Long userId, String text, Timestamp time) {
