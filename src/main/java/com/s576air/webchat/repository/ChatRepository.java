@@ -2,6 +2,7 @@ package com.s576air.webchat.repository;
 
 import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.domain.ChatData;
+import com.s576air.webchat.domain.LoadChatData;
 import com.s576air.webchat.dto.ChatBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class ChatRepository {
@@ -157,10 +159,7 @@ public class ChatRepository {
         int n = textBases.size() - 1;
         String sql = "SELECT * FROM text_chat WHERE id IN (?" + ",?".repeat(n) + ") ORDER BY id DESC";
 
-        List<Long> contentIds = new ArrayList<>();
-        for (ChatBase chatBase: textBases) {
-            contentIds.add(chatBase.getContentId());
-        }
+        List<Long> contentIds = textBases.stream().map(ChatBase::getContentId).toList();
 
         List<String> texts = jdbcTemplate.query(sql, TextChatRowMapper(), contentIds.toArray());
 
@@ -178,5 +177,35 @@ public class ChatRepository {
 
     private RowMapper<String> TextChatRowMapper() {
         return (rs, rowNum) -> rs.getString("text");
+    }
+
+    private Optional<List<Chat>> getDataChats(List<ChatBase> dataBases) {
+        if (dataBases.isEmpty()) { return Optional.of(new ArrayList<>()); }
+
+        int n = dataBases.size() - 1;
+        String sql = "SELECT * FROM data_chat WHERE id IN (?" + ",?".repeat(n) + ") ORDER BY id DESC";
+
+        List<Long> contentIds = dataBases.stream().map(ChatBase::getContentId).toList();
+
+        List<LoadChatData> datas = jdbcTemplate.query(sql, DataChatRowMapper(), contentIds.toArray());
+
+        if (dataBases.size() != datas.size()) { return Optional.empty(); }
+
+        List<Chat> chats = new ArrayList<>();
+
+        for (int i = 0; i < dataBases.size(); i++) {
+            ChatBase base = dataBases.get(i);
+            LoadChatData data = datas.get(i);
+            chats.add(new Chat(base.getId(), base.getChatroomId(), base.getUserId(), data.getExtention(), data.getId().toString(), base.getSentTime()));
+        }
+
+        return Optional.empty();
+    }
+
+    private  RowMapper<LoadChatData> DataChatRowMapper() {
+        return (rs, rowNum) -> new LoadChatData(
+            rs.getLong("id"),
+            rs.getString("ext")
+        );
     }
 }

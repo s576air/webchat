@@ -28,10 +28,7 @@ public class DataChatRepository {
         jdbcTemplate.update(conn -> {
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, chatData.getExtension());
-
-            Blob blob = conn.createBlob();
-            blob.setBytes(1, chatData.getData());
-            ps.setBlob(2, blob);
+            ps.setBlob(2, chatData.getData());
 
             return ps;
         }, keyHolder);
