@@ -95,7 +95,7 @@ public class ChatRepository {
             }
 
             Optional<List<Chat>> textChats = getTextChats(textBases);
-            Optional<List<Chat>> binaryChats = Optional.of(new ArrayList<>());
+            Optional<List<Chat>> binaryChats = getDataChats(binaryBases);
 
             if (textChats.isEmpty() || binaryChats.isEmpty()) { return Optional.empty(); }
 
@@ -127,12 +127,34 @@ public class ChatRepository {
             }
 
             Optional<List<Chat>> textChats = getTextChats(textBases);
-            Optional<List<Chat>> binaryChats = Optional.of(new ArrayList<>());
+            Optional<List<Chat>> binaryChats = getDataChats(binaryBases);
 
-            if (textChats.isEmpty() || binaryChats.isEmpty()) { return Optional.empty(); }
+            if (textChats.isEmpty() && binaryChats.isEmpty()) {
+                return Optional.empty();
+            } else if (textChats.isEmpty()) {
+                return binaryChats;
+            } else if (binaryChats.isEmpty()) {
+                return textChats;
+            }
 
-            // 나중에 병합 정렬로 수정 바람
-            List<Chat> chats = textChats.get();
+            List<Chat> textChats2 = textChats.get();
+            List<Chat> binaryChats2 = binaryChats.get();
+            int textIndex = 0;
+            int binaryIndex = 0;
+
+            List<Chat> chats = new ArrayList<>();
+
+            while (textChats2.size() > textIndex && binaryChats2.size() > binaryIndex) {
+                Chat textChat = textChats2.get(textIndex);
+                Chat binaryChat = binaryChats2.get(binaryIndex);
+                if (textChat.getId() < binaryChat.getId()) {
+                    chats.add(textChat);
+                    textIndex++;
+                } else {
+                    chats.add(binaryChat);
+                    binaryIndex++;
+                }
+            }
 
             return Optional.of(chats);
 
@@ -179,22 +201,22 @@ public class ChatRepository {
         return (rs, rowNum) -> rs.getString("text");
     }
 
-    private Optional<List<Chat>> getDataChats(List<ChatBase> dataBases) {
-        if (dataBases.isEmpty()) { return Optional.of(new ArrayList<>()); }
+    private Optional<List<Chat>> getDataChats(List<ChatBase> binaryBases) {
+        if (binaryBases.isEmpty()) { return Optional.of(new ArrayList<>()); }
 
-        int n = dataBases.size() - 1;
+        int n = binaryBases.size() - 1;
         String sql = "SELECT * FROM data_chat WHERE id IN (?" + ",?".repeat(n) + ") ORDER BY id DESC";
 
-        List<Long> contentIds = dataBases.stream().map(ChatBase::getContentId).toList();
+        List<Long> contentIds = binaryBases.stream().map(ChatBase::getContentId).toList();
 
         List<LoadChatData> datas = jdbcTemplate.query(sql, DataChatRowMapper(), contentIds.toArray());
 
-        if (dataBases.size() != datas.size()) { return Optional.empty(); }
+        if (binaryBases.size() != datas.size()) { return Optional.empty(); }
 
         List<Chat> chats = new ArrayList<>();
 
-        for (int i = 0; i < dataBases.size(); i++) {
-            ChatBase base = dataBases.get(i);
+        for (int i = 0; i < binaryBases.size(); i++) {
+            ChatBase base = binaryBases.get(i);
             LoadChatData data = datas.get(i);
             chats.add(new Chat(base.getId(), base.getChatroomId(), base.getUserId(), data.getExtention(), data.getId().toString(), base.getSentTime()));
         }
