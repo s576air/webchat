@@ -83,27 +83,7 @@ public class ChatRepository {
         try {
             List<ChatBase> chatBases = jdbcTemplate.query(sql, ChatBaseRowMapper(), chatroomId, chatId, limit);
 
-            List<ChatBase> textBases = new ArrayList<>();
-            List<ChatBase> binaryBases = new ArrayList<>();
-
-            for (ChatBase chatBase: chatBases) {
-                if (chatBase.isText()) {
-                    textBases.add(chatBase);
-                } else {
-                    binaryBases.add(chatBase);
-                }
-            }
-
-            Optional<List<Chat>> textChats = getTextChats(textBases);
-            Optional<List<Chat>> binaryChats = getDataChats(binaryBases);
-
-            if (textChats.isEmpty() || binaryChats.isEmpty()) { return Optional.empty(); }
-
-            // 나중에 병합 정렬로 수정 바람
-            List<Chat> chats = textChats.get();
-
-            return Optional.of(chats);
-
+            return convertChatBasesToChats(chatBases);
         } catch (Exception e) {
             System.out.println("findChatroomListByUserId error: " + e.getMessage());
             return Optional.empty();
@@ -115,53 +95,59 @@ public class ChatRepository {
         try {
             List<ChatBase> chatBases = jdbcTemplate.query(sql, ChatBaseRowMapper(), chatroomId, limit);
 
-            List<ChatBase> textBases = new ArrayList<>();
-            List<ChatBase> binaryBases = new ArrayList<>();
-
-            for (ChatBase chatBase: chatBases) {
-                if (chatBase.isText()) {
-                    textBases.add(chatBase);
-                } else {
-                    binaryBases.add(chatBase);
-                }
-            }
-
-            Optional<List<Chat>> textChats = getTextChats(textBases);
-            Optional<List<Chat>> binaryChats = getDataChats(binaryBases);
-
-            if (textChats.isEmpty() && binaryChats.isEmpty()) {
-                return Optional.empty();
-            } else if (textChats.isEmpty()) {
-                return binaryChats;
-            } else if (binaryChats.isEmpty()) {
-                return textChats;
-            }
-
-            List<Chat> textChats2 = textChats.get();
-            List<Chat> binaryChats2 = binaryChats.get();
-            int textIndex = 0;
-            int binaryIndex = 0;
-
-            List<Chat> chats = new ArrayList<>();
-
-            while (textChats2.size() > textIndex && binaryChats2.size() > binaryIndex) {
-                Chat textChat = textChats2.get(textIndex);
-                Chat binaryChat = binaryChats2.get(binaryIndex);
-                if (textChat.getId() < binaryChat.getId()) {
-                    chats.add(textChat);
-                    textIndex++;
-                } else {
-                    chats.add(binaryChat);
-                    binaryIndex++;
-                }
-            }
-
-            return Optional.of(chats);
-
+            return convertChatBasesToChats(chatBases);
         } catch (Exception e) {
             System.out.println("findChatroomListByUserId error: " + e.getMessage());
             return Optional.empty();
         }
+    }
+
+    private Optional<List<Chat>> convertChatBasesToChats(List<ChatBase> chatBases) {
+        List<ChatBase> textBases = new ArrayList<>();
+        List<ChatBase> binaryBases = new ArrayList<>();
+
+        for (ChatBase chatBase: chatBases) {
+            if (chatBase.isText()) {
+                textBases.add(chatBase);
+            } else {
+                binaryBases.add(chatBase);
+            }
+        }
+
+        Optional<List<Chat>> textChats = getTextChats(textBases);
+        Optional<List<Chat>> binaryChats = getDataChats(binaryBases);
+
+        if (textChats.isEmpty() && binaryChats.isEmpty()) {
+            return Optional.empty();
+        } else if (textChats.isEmpty()) {
+            return binaryChats;
+        } else if (binaryChats.isEmpty()) {
+            return textChats;
+        }
+
+        List<Chat> textChats2 = textChats.get();
+        List<Chat> binaryChats2 = binaryChats.get();
+        int textIndex = 0;
+        int binaryIndex = 0;
+
+        List<Chat> chats = new ArrayList<>();
+
+        while (textChats2.size() > textIndex && binaryChats2.size() > binaryIndex) {
+            Chat textChat = textChats2.get(textIndex);
+            Chat binaryChat = binaryChats2.get(binaryIndex);
+            if (textChat.getId() < binaryChat.getId()) {
+                chats.add(textChat);
+                textIndex++;
+            } else {
+                chats.add(binaryChat);
+                binaryIndex++;
+            }
+        }
+
+        chats.addAll(textChats2.subList(textIndex, textChats2.size()));
+        chats.addAll(binaryChats2.subList(binaryIndex, textChats2.size()));
+
+        return Optional.of(chats);
     }
 
     private RowMapper<ChatBase> ChatBaseRowMapper() {
