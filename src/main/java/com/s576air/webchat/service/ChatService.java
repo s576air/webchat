@@ -51,7 +51,8 @@ public class ChatService {
     }
 
     public Optional<List<Chat>> getChats(Long chatroomId, Long chatId) {
-        chatroomsCache.getChats(chatroomId, chatId, 2);
+        Optional<List<Chat>> chats = chatroomsCache.getChats(chatroomId, chatId, 2);
+        if (chats.isPresent()) return chats;
         return chatRepository.getChats(chatroomId, chatId, 2);
     }
 

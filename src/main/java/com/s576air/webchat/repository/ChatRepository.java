@@ -17,7 +17,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class ChatRepository {
@@ -85,6 +84,7 @@ public class ChatRepository {
 
             return convertChatBasesToChats(chatBases);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("findChatroomListByUserId error: " + e.getMessage());
             return Optional.empty();
         }
@@ -145,7 +145,7 @@ public class ChatRepository {
         }
 
         chats.addAll(textChats2.subList(textIndex, textChats2.size()));
-        chats.addAll(binaryChats2.subList(binaryIndex, textChats2.size()));
+        chats.addAll(binaryChats2.subList(binaryIndex, binaryChats2.size()));
 
         return Optional.of(chats);
     }

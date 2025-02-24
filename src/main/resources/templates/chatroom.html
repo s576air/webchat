@@ -16,10 +16,10 @@
             console.log(event.data);
             const data = JSON.parse(event.data);
 
-            if (data.error) {
-                console.log(messages);
-            } else if (data.content) {
-                const message = data;
+            if (data.tag == "error") {
+                console.log(data.content);
+            } else if (data.tag == "newChat") {
+                const message = data.content;
                 const chatsDiv = document.getElementById('chats');
 
                 const outerDiv = document.createElement('div');
@@ -36,8 +36,8 @@
                 outerDiv.appendChild(chatInfo);
 
                 chatsDiv.appendChild(outerDiv);
-            } else {
-                const messages = data;
+            } else if (data.tag == "chats") {
+                const messages = data.content;
                 const chatsDiv = document.getElementById('chats');
 
                 if (messages.length != 0) {

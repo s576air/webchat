@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class JsonUtil {
@@ -20,5 +21,16 @@ public class JsonUtil {
             System.out.println("json 변환 오류:" + e.getMessage());
             return Optional.empty();
         }
+    }
+
+    public static Optional<String> toTaggedJson(String tag, Object object) {
+        // tag 종류: newChat, chats
+        return JsonUtil.toJson(Map.of("tag", tag, "content", object));
+    }
+
+    public static String errorJson(String message) {
+        return """
+            { "tag": "error", "content": "
+            """.strip() + message + "\"}";
     }
 }

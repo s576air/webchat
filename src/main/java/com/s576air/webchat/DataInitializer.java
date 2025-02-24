@@ -1,5 +1,6 @@
 package com.s576air.webchat;
 
+import com.s576air.webchat.domain.ChatData;
 import com.s576air.webchat.repository.ChatRepository;
 import com.s576air.webchat.repository.ChatroomParticipantsRepository;
 import com.s576air.webchat.repository.ChatroomRepository;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -62,6 +66,12 @@ public class DataInitializer implements CommandLineRunner {
             chatRepository.addTextChat(chatroomId1, userId2, "세번째 메시지!", new Timestamp(new Date().getTime()));
             Thread.sleep(1);
             chatRepository.addTextChat(chatroomId1, userId2, "마지막 메시지!", new Timestamp(new Date().getTime()));
+            Thread.sleep(1);
+
+            InputStream inputStream = new FileInputStream("test.png");
+            ChatData chatData = new ChatData(inputStream, "png");
+            chatRepository.addDataChat(chatroomId1, userId1, chatData, new Timestamp(new Date().getTime()));
+
 
             chatRepository.addTextChat(chatroomId2, userId1, "내가 처음이다!", new Timestamp(new Date().getTime()));
             Thread.sleep(1);

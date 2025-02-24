@@ -38,7 +38,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
 
     public static void sendTextChat(WebSocketSession session, Chat chat) {
         if (session != null && session.isOpen()) {
-            Optional<String> chatJson = JsonUtil.toJson(chat);
+            Optional<String> chatJson = JsonUtil.toTaggedJson("newChat", chat);
             if (chatJson.isPresent()) {
                 try {
                     session.sendMessage(new TextMessage(chatJson.get()));
@@ -106,18 +106,17 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         try {
             request = objectMapper.readValue(payload, MessageRequestPayload.class);
         } catch (JsonProcessingException e) {
-            return Optional.of("{\"error\": \"요청 해석 실패\"}");
+            return Optional.of(JsonUtil.errorJson("요청 해석에 실패하였습니다."));
         }
 
         if (!chatroomService.containsUser(request.getChatroomId(), userId)) {
-            return Optional.of("{\"error\": \"소속되지 않은 채팅방\"}");
+            return Optional.of(JsonUtil.errorJson("채팅방에 소속되어 있지 않습니다."));
         }
 
         if (request.getType().equals("send")) {
             Long chatroomId = request.getChatroomId();
             if (chatroomService.containsUser(chatroomId, userId)) {
                 chatService.saveTextMessage(chatroomId, userId, request.getText());
-                // 같은 채팅방의 다른 유저에게 메시지 전송하는 기능 추가바람
             }
             return Optional.empty();
         } else if (request.getType().equals("load")) {
@@ -125,17 +124,14 @@ public class ChatWebSocketHandler implements WebSocketHandler {
             try {
                 id = Long.parseLong(request.getText());
             } catch (NumberFormatException e) {
-                return Optional.of("{\"error\": \"숫자 해석 실패\"}");
+                return Optional.of(JsonUtil.errorJson("숫자 해석에 실패하였습니다."));
             }
             Optional<List<Chat>> chats = chatService.getChats(request.getChatroomId(), id);
 
             if (chats.isPresent()) {
-                Optional<String> chatsJson = JsonUtil.toJson(chats.get());
-                if (chatsJson.isPresent()) {
-                    return chatsJson;
-                }
+                return JsonUtil.toTaggedJson("chats", chats.get());
             } else {
-                return Optional.of("{\"error\": \"채팅 획득 실패\"}");
+                return Optional.of(JsonUtil.errorJson("채팅 내역을 가져오지 못하였습니다."));
             }
         }
         return Optional.empty();
