@@ -55,8 +55,4 @@ public class ChatService {
         if (chats.isPresent()) return chats;
         return chatRepository.getChats(chatroomId, chatId, 2);
     }
-
-    public Optional<List<Chat>> getLastChats(Long chatroomId) {
-        return chatRepository.getLastChats(chatroomId, 2);
-    }
 }

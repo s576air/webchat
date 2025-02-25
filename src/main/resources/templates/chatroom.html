@@ -5,7 +5,7 @@
     <title>Chatroom</title>
     <script>
         const chatroomId = [[${id}]];
-        let firstChatId = '[[${chats[0].id}]]';
+        let firstChatId = 2147483647;
         const socket = new WebSocket('/ws/chat');
 
         socket.onopen = () => {
@@ -115,9 +115,7 @@
 
 <button type="button" id="load">이전 메시지 가져오기</button>
 
-<div id="chats"><div th:each="chat: ${chats}">
-    <div class="chat" th:if="${chat.type.isEmpty()}" th:text="${chat.content}">Default</div>
-    <div class="chat-info" th:text="'유저id: ' + ${chat.userId} + ', 시간: ' + ${#dates.format(chat.sentTime, 'yyyy-MM-dd HH:mm:ss.SSS')}">Default chat-info</div>
+<div id="chats"><div>
 </div></div>
 
 <label for="userInput">메시지:</label>

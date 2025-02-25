@@ -37,19 +37,14 @@ public class ChatroomController {
         Long userId = userDetails.getId();
 
         Optional<String> chatroomName = chatroomService.getName(chatroomId);
-        Optional<List<Chat>> chats = chatService.getLastChats(chatroomId);
         if (
             chatroomService.containsUser(chatroomId, userId) &&
-            chatroomName.isPresent() &&
-            chats.isPresent()
+            chatroomName.isPresent()
         ) {
             usersCache.addUsedChatroomId(userId, chatroomId);
 
-            List<Chat> chats2 = chats.get();
-            Collections.reverse(chats2);
             model.addAttribute("id", chatroomId);
             model.addAttribute("name", chatroomName.get());
-            model.addAttribute("chats", chats2);
             return "chatroom";
         } else {
             return "forward:/chatroom-not-found.html";

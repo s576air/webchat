@@ -135,7 +135,7 @@ public class ChatRepository {
         while (textChats2.size() > textIndex && binaryChats2.size() > binaryIndex) {
             Chat textChat = textChats2.get(textIndex);
             Chat binaryChat = binaryChats2.get(binaryIndex);
-            if (textChat.getId() < binaryChat.getId()) {
+            if (textChat.getId() > binaryChat.getId()) {
                 chats.add(textChat);
                 textIndex++;
             } else {
@@ -188,7 +188,7 @@ public class ChatRepository {
     }
 
     private Optional<List<Chat>> getDataChats(List<ChatBase> binaryBases) {
-        if (binaryBases.isEmpty()) { return Optional.of(new ArrayList<>()); }
+        if (binaryBases.isEmpty()) { return Optional.empty(); }
 
         int n = binaryBases.size() - 1;
         String sql = "SELECT * FROM data_chat WHERE id IN (?" + ",?".repeat(n) + ") ORDER BY id DESC";
@@ -207,7 +207,7 @@ public class ChatRepository {
             chats.add(new Chat(base.getId(), base.getChatroomId(), base.getUserId(), data.getExtention(), data.getId().toString(), base.getSentTime()));
         }
 
-        return Optional.empty();
+        return Optional.of(chats);
     }
 
     private  RowMapper<LoadChatData> DataChatRowMapper() {
