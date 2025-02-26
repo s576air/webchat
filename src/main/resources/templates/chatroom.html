@@ -8,6 +8,23 @@
         let firstChatId = 2147483647;
         const socket = new WebSocket('/ws/chat');
 
+        function createTextMessageDiv(message) {
+            const outerDiv = document.createElement('div');
+
+            const chat = document.createElement('div');
+            chat.classList.add('chat');
+            chat.textContent = message.content;
+
+            const chatInfo = document.createElement('div');
+            chatInfo.classList.add('chat-info');
+            chatInfo.textContent = '유저id: ' + message.userId + ', 시간: ' +  message.sentTime;
+
+            outerDiv.appendChild(chat);
+            outerDiv.appendChild(chatInfo);
+
+            return outerDiv;
+        }
+
         socket.onopen = () => {
             console.log("WebSocket 연결됨!");
         };
@@ -46,21 +63,44 @@
 
                 for(let i = 0; i < messages.length; i++) {
                     const message = messages[i];
+                    let element;
 
-                    const outerDiv = document.createElement('div');
+                    if (message.type == "") {
+                        element = createTextMessageDiv(message);
+                    } else if (["png", "jpg"].includes(message.type)) {
+                        element = document.createElement("div");
 
-                    const chat = document.createElement('div');
-                    chat.classList.add('chat');
-                    chat.textContent = message.content;
+                        const image = document.createElement("img");
+                        image.src = "?"; // 서버 컨트롤러에 요청, 주소 변경 바람
+                        image.alt = "이미지";
 
-                    const chatInfo = document.createElement('div');
-                    chatInfo.classList.add('chat-info');
-                    chatInfo.textContent = '유저id: ' + message.userId + ', 시간: ' +  message.sentTime;
+                        element.appendChild(image);
+                    } else if (["mpeg", "wav", "ogg"].includes(message.type)) {
+                        const audio = document.createElement("audio");
+                        audio.controls = true;
 
-                    outerDiv.appendChild(chat);
-                    outerDiv.appendChild(chatInfo);
+                        const source = document.createElement("source");
+                        source.src = "?"; // 서버 컨트롤러에 요청, 주소 변경 바람
+                        source.type = "audio/" + message.type;
 
-                    chatsDiv.prepend(outerDiv);
+                        audio.appendChild(source);
+
+                        element = audio;
+                    } else if (["mp4", "webm", "avi"].includes(message.type)) {
+                        const video = document.createElement("video");
+                        video.controls = true;
+
+                        const source = document.createElement("source");
+                        source.src = "?"; // 서버 컨트롤러에 요청, 주소 변경 바람
+                        source.type = "video/" + message.type;
+
+                        video.appendChild(source);
+
+                        element = video;
+                    }
+
+
+                    chatsDiv.prepend(element);
                 }
             }
 
