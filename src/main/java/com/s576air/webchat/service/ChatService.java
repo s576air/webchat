@@ -1,6 +1,7 @@
 package com.s576air.webchat.service;
 
 import com.s576air.webchat.domain.Chat;
+import com.s576air.webchat.domain.ChatData;
 import com.s576air.webchat.repository.ChatRepository;
 import com.s576air.webchat.websocket.ChatWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;

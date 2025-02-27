@@ -195,7 +195,7 @@ public class ChatRepository {
 
         List<Long> contentIds = binaryBases.stream().map(ChatBase::getContentId).toList();
 
-        List<LoadChatData> datas = jdbcTemplate.query(sql, DataChatRowMapper(), contentIds.toArray());
+        List<LoadChatData> datas = jdbcTemplate.query(sql, LoadChatDataRowMapper(), contentIds.toArray());
 
         if (binaryBases.size() != datas.size()) { return Optional.empty(); }
 
@@ -210,9 +210,26 @@ public class ChatRepository {
         return Optional.of(chats);
     }
 
-    private  RowMapper<LoadChatData> DataChatRowMapper() {
+    private RowMapper<LoadChatData> LoadChatDataRowMapper() {
         return (rs, rowNum) -> new LoadChatData(
             rs.getLong("id"),
+            rs.getString("ext")
+        );
+    }
+
+    public Optional<ChatData> getChatData(Long dataChatId) {
+        String sql = "SELECT * FROM data_chat WHERE id = ?";
+        try {
+            ChatData chatData = jdbcTemplate.queryForObject(sql, ChatDataRowMapper(), dataChatId);
+            return Optional.ofNullable(chatData);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    private RowMapper<ChatData> ChatDataRowMapper() {
+        return (rs, rowNum) -> new ChatData(
+            rs.getBinaryStream("data"),
             rs.getString("ext")
         );
     }
