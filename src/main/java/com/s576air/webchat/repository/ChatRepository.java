@@ -233,4 +233,25 @@ public class ChatRepository {
             rs.getString("ext")
         );
     }
+
+    public Optional<Long> getDataChatId(Long chatId) {
+        String sql = "SELECT content_id FROM chat WHERE id = ?";
+        try {
+            Long dataChatId = jdbcTemplate.queryForObject(sql, Long.class, chatId);
+            return Optional.ofNullable(dataChatId);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<ChatBase> getChatBase(Long chatId) {
+        String sql = "SELECT * FROM chat WHERE id = ?";
+        try {
+            ChatBase chatBases = jdbcTemplate.queryForObject(sql, ChatBaseRowMapper(), chatId);
+
+            return Optional.ofNullable(chatBases);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 }

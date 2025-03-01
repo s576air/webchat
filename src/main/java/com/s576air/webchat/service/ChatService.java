@@ -2,6 +2,7 @@ package com.s576air.webchat.service;
 
 import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.domain.ChatData;
+import com.s576air.webchat.dto.ChatBase;
 import com.s576air.webchat.repository.ChatRepository;
 import com.s576air.webchat.websocket.ChatWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,5 +56,20 @@ public class ChatService {
         Optional<List<Chat>> chats = chatroomsCache.getChats(chatroomId, chatId, 2);
         if (chats.isPresent()) return chats;
         return chatRepository.getChats(chatroomId, chatId, 2);
+    }
+
+    public Optional<ChatData> getChatData(Long chatId) {
+         Optional<Long> dataChatId = chatRepository.getDataChatId(chatId);
+
+         if (dataChatId.isEmpty()) return Optional.empty();
+
+         return chatRepository.getChatData(dataChatId.get());
+    }
+
+    public boolean chatroomContainsChat(Long chatroomId, Long chatId) {
+        Optional<ChatBase> chatBase = chatRepository.getChatBase(chatId);
+        return chatBase
+            .map(base -> base.getChatroomId().equals(chatroomId))
+            .orElse(false);
     }
 }

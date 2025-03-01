@@ -1,12 +1,14 @@
 package com.s576air.webchat.controller;
 
-import com.s576air.webchat.domain.Chat;
+import com.s576air.webchat.domain.ChatData;
 import com.s576air.webchat.domain.CustomUserDetails;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
 import com.s576air.webchat.service.UsersCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -58,10 +58,22 @@ public class ChatroomController {
 
     @GetMapping("media/{chatroomId}/{chatId}")
     public ResponseEntity<Resource> getMediaData(@PathVariable Long chatroomId, @PathVariable Long chatId) throws IOException {
-        // 1. 유저 id 획득
-        // 2. 유저가 채팅방에 속하는지 확인
-        // 3. 채팅 id가 채팅방에 속하는지 확인
-        // 4. 반환
-        throw new IOException();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+
+        if (!chatroomService.containsUser(chatroomId, userId)) throw new IOException();
+
+        if (!chatService.chatroomContainsChat(chatroomId, chatId)) throw new IOException();
+
+        Optional<ChatData> optionalChatData = chatService.getChatData(chatId);
+
+        if (optionalChatData.isEmpty()) throw new IOException();
+
+        ChatData chatData = optionalChatData.get();
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(chatData.getContentType()))
+            .body(new InputStreamResource(chatData.getData()));
     }
 }

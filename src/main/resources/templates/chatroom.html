@@ -5,6 +5,7 @@
     <title>Chatroom</title>
     <script>
         const chatroomId = [[${id}]];
+        const mediaSrc = 'media/' + chatroomId + '/';
         let firstChatId = 2147483647;
         const socket = new WebSocket('/ws/chat');
 
@@ -71,7 +72,7 @@
                         element = document.createElement("div");
 
                         const image = document.createElement("img");
-                        image.src = "?"; // 서버 컨트롤러에 요청, 주소 변경 바람
+                        image.src = mediaSrc + message.id;
                         image.alt = "이미지";
 
                         element.appendChild(image);
@@ -80,7 +81,7 @@
                         audio.controls = true;
 
                         const source = document.createElement("source");
-                        source.src = "?"; // 서버 컨트롤러에 요청, 주소 변경 바람
+                        source.src = mediaSrc + message.id;
                         source.type = "audio/" + message.type;
 
                         audio.appendChild(source);
@@ -91,7 +92,7 @@
                         video.controls = true;
 
                         const source = document.createElement("source");
-                        source.src = "?"; // 서버 컨트롤러에 요청, 주소 변경 바람
+                        source.src = mediaSrc + message.id;
                         source.type = "video/" + message.type;
 
                         video.appendChild(source);

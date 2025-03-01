@@ -34,6 +34,6 @@ CREATE TABLE IF NOT EXISTS text_chat (
 
 CREATE TABLE IF NOT EXISTS data_chat (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    ext VARCHAR(8),
+    ext VARCHAR(16),
     data BLOB
 );

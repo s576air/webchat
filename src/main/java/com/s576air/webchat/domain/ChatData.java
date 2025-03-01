@@ -4,11 +4,12 @@ import java.io.InputStream;
 
 public class ChatData {
     InputStream data;
-    String extension;
+    // 예시: video/mp4, audio/ogg
+    String contentType;
 
     public ChatData(InputStream data, String extension) {
         this.data = data;
-        this.extension = extension;
+        this.contentType = extension;
     }
 
     public InputStream getData() {
@@ -19,11 +20,11 @@ public class ChatData {
         this.data = data;
     }
 
-    public String getExtension() {
-        return extension;
+    public String getContentType() {
+        return contentType;
     }
 
-    public void setExtension(String extension) {
-        this.extension = extension;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
     }
 }

@@ -69,7 +69,7 @@ public class DataInitializer implements CommandLineRunner {
             Thread.sleep(1);
 
             InputStream inputStream = new FileInputStream("test.png");
-            ChatData chatData = new ChatData(inputStream, "png");
+            ChatData chatData = new ChatData(inputStream, "image/png");
             chatRepository.addDataChat(chatroomId1, userId1, chatData, new Timestamp(new Date().getTime()));
 
 

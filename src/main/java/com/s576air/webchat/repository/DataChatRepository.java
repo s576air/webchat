@@ -7,7 +7,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Optional;
@@ -27,7 +26,7 @@ public class DataChatRepository {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, chatData.getExtension());
+            ps.setString(1, chatData.getContentType());
             ps.setBlob(2, chatData.getData());
 
             return ps;
