@@ -5,7 +5,7 @@
     <title>Chatroom</title>
     <script>
         const chatroomId = [[${id}]];
-        const mediaSrc = 'media/' + chatroomId + '/';
+        const mediaSrc = '/media/' + chatroomId + '/';
         let firstChatId = 2147483647;
         const socket = new WebSocket('/ws/chat');
 
@@ -68,7 +68,7 @@
 
                     if (message.type == "") {
                         element = createTextMessageDiv(message);
-                    } else if (["png", "jpg"].includes(message.type)) {
+                    } else if (message.type.startsWith('image')) {
                         element = document.createElement("div");
 
                         const image = document.createElement("img");
@@ -76,7 +76,7 @@
                         image.alt = "이미지";
 
                         element.appendChild(image);
-                    } else if (["mpeg", "wav", "ogg"].includes(message.type)) {
+                    } else if (message.type.startsWith('audio')) {
                         const audio = document.createElement("audio");
                         audio.controls = true;
 
@@ -87,7 +87,7 @@
                         audio.appendChild(source);
 
                         element = audio;
-                    } else if (["mp4", "webm", "avi"].includes(message.type)) {
+                    } else if (message.type.startsWith('video')) {
                         const video = document.createElement("video");
                         video.controls = true;
 
