@@ -6,6 +6,7 @@
     <script>
         const chatroomId = [[${id}]];
         const mediaSrc = '/media/' + chatroomId + '/';
+        const uploadUrl = '/upload/' + chatroomId;
         let firstChatId = 2147483647;
         const socket = new WebSocket('/ws/chat');
 
@@ -24,6 +25,19 @@
             outerDiv.appendChild(chatInfo);
 
             return outerDiv;
+        }
+
+        function uploadFile(file) {
+            if (!file.length) { return; }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch(uploadUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .catch(error => alert('업로드 실패: ' + error));
         }
 
         socket.onopen = () => {
@@ -141,6 +155,24 @@
                     socket.send(JSON.stringify(message));
                 }
             });
+
+            const dropZone = document.getElementById('drop-zone');
+
+            dropZone.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (event) => {
+                event.preventDefault();
+                dropZone.classList.remove('dragover');
+
+                uploadFile(event.dataTransfer.files);
+            });
         });
     </script>
     <style>
@@ -149,6 +181,21 @@
         }
         .chat-info {
             font-size: 12px;
+        }
+        #dropZone {
+            width: 200px;
+            height: 200px;
+            border: 2px dashed #aaa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #aaa;
+            margin: 10px;
+        }
+        #drop-zone.dragover {
+            border-color: #333;
+            color: #333;
         }
     </style>
 </head>
@@ -162,6 +209,10 @@
 <label for="userInput">메시지:</label>
 <input type="text" id="userInput" placeholder="메시지 입력">
 <button type="button" id="send">전송</button>
+
+<div id="dropZone">파일 업로드</div>
+
+<button onclick="uploadFiles()">파일 업로드</button>
 
 <p th:text="'챗방 id: ' + ${id}"></p>
 </body>

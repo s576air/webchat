@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -75,5 +76,16 @@ public class ChatroomController {
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType(chatData.getContentType()))
             .body(new InputStreamResource(chatData.getData()));
+    }
+
+    @PostMapping("upload/{chatroomId}")
+    public ResponseEntity<String> upload(@PathVariable Long chatroomId, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("파일이 비어있습니다.");
+        }
+
+        //
+
+        return ResponseEntity.ok("아직 구현 안됨");
     }
 }
