@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 @Controller
@@ -79,13 +80,26 @@ public class ChatroomController {
     }
 
     @PostMapping("upload/{chatroomId}")
-    public ResponseEntity<String> upload(@PathVariable Long chatroomId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> upload(@PathVariable Long chatroomId, @RequestParam("file") MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("파일이 비어있습니다.");
         }
 
-        //
+        String contentType = file.getContentType();
+        InputStream inputStream;
+        try {
+            inputStream = file.getInputStream();
+        } catch (IOException e) {
+            throw new IOException();
+        }
 
-        return ResponseEntity.ok("아직 구현 안됨");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getId();
+
+        ChatData chatData = new ChatData(inputStream, contentType);
+        chatService.addDataChat(chatroomId, userId, chatData);
+
+        return ResponseEntity.ok("ok");
     }
 }

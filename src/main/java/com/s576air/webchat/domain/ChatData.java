@@ -7,9 +7,9 @@ public class ChatData {
     // 예시: video/mp4, audio/ogg
     String contentType;
 
-    public ChatData(InputStream data, String extension) {
+    public ChatData(InputStream data, String contentType) {
         this.data = data;
-        this.contentType = extension;
+        this.contentType = contentType;
     }
 
     public InputStream getData() {

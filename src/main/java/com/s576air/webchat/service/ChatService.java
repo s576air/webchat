@@ -66,6 +66,11 @@ public class ChatService {
          return chatRepository.getChatData(dataChatId.get());
     }
 
+    public boolean addDataChat(Long chatroomId, Long userId, ChatData chatData) {
+        Timestamp time = new Timestamp(new Date().getTime());
+        return chatRepository.addDataChat(chatroomId, userId, chatData, time).isPresent();
+    }
+
     public boolean chatroomContainsChat(Long chatroomId, Long chatId) {
         Optional<ChatBase> chatBase = chatRepository.getChatBase(chatId);
         return chatBase
