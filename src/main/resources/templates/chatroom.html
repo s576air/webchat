@@ -28,7 +28,7 @@
         }
 
         function uploadFile(file) {
-            if (!file.length) { return; }
+            if (!file) { return; }
 
             const formData = new FormData();
             formData.append('file', file);
@@ -37,7 +37,9 @@
                 method: 'POST',
                 body: formData
             })
-            .catch(error => alert('업로드 실패: ' + error));
+            .then(response => response.text())
+            .then(console.log)
+            .catch(error => console.log('업로드 실패: ' + error));
         }
 
         socket.onopen = () => {
@@ -156,7 +158,7 @@
                 }
             });
 
-            const dropZone = document.getElementById('drop-zone');
+            const dropZone = document.getElementById('dropZone');
 
             dropZone.addEventListener('dragover', (event) => {
                 event.preventDefault();
@@ -171,7 +173,7 @@
                 event.preventDefault();
                 dropZone.classList.remove('dragover');
 
-                uploadFile(event.dataTransfer.files);
+                uploadFile(event.dataTransfer.files[0]);
             });
         });
     </script>
@@ -212,7 +214,7 @@
 
 <div id="dropZone">파일 업로드</div>
 
-<button onclick="uploadFiles()">파일 업로드</button>
+<button onclick="uploadFile()">파일 업로드</button>
 
 <p th:text="'챗방 id: ' + ${id}"></p>
 </body>
