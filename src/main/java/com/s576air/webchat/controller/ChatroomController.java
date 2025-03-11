@@ -98,8 +98,12 @@ public class ChatroomController {
         Long userId = userDetails.getId();
 
         ChatData chatData = new ChatData(inputStream, contentType);
-        chatService.addDataChat(chatroomId, userId, chatData);
+        boolean result = chatService.saveDataChat(chatroomId, userId, chatData);
 
-        return ResponseEntity.ok("ok");
+        if (result) {
+            return ResponseEntity.ok("ok");
+        } else {
+            return ResponseEntity.badRequest().body("저장에 실패했습니다.");
+        }
     }
 }

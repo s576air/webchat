@@ -7,9 +7,7 @@ import com.s576air.webchat.repository.ChatRepository;
 import com.s576air.webchat.websocket.ChatWebSocketHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +26,7 @@ public class ChatService {
         this.chatroomsCache = chatroomsCache;
     }
 
-    public void saveTextMessage(Long chatroomId, Long userId, String text) {
+    public void saveTextChat(Long chatroomId, Long userId, String text) {
         Timestamp time = new Timestamp(new Date().getTime());
         Optional<Long> chatId = chatRepository.addTextChat(chatroomId, userId, text, time);
 
@@ -52,6 +50,11 @@ public class ChatService {
             });
     }
 
+    public boolean saveDataChat(Long chatroomId, Long userId, ChatData chatData) {
+        Timestamp time = new Timestamp(new Date().getTime());
+        return chatRepository.addDataChat(chatroomId, userId, chatData, time).isPresent();
+    }
+
     public Optional<List<Chat>> getChats(Long chatroomId, Long chatId) {
         Optional<List<Chat>> chats = chatroomsCache.getChats(chatroomId, chatId, 2);
         if (chats.isPresent()) return chats;
@@ -64,11 +67,6 @@ public class ChatService {
          if (dataChatId.isEmpty()) return Optional.empty();
 
          return chatRepository.getChatData(dataChatId.get());
-    }
-
-    public boolean addDataChat(Long chatroomId, Long userId, ChatData chatData) {
-        Timestamp time = new Timestamp(new Date().getTime());
-        return chatRepository.addDataChat(chatroomId, userId, chatData, time).isPresent();
     }
 
     public boolean chatroomContainsChat(Long chatroomId, Long chatId) {

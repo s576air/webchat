@@ -5,7 +5,6 @@
     <title>Chatroom</title>
     <script>
         const chatroomId = [[${id}]];
-        const mediaSrc = '/media/' + chatroomId + '/';
         const uploadUrl = '/upload/' + chatroomId;
         let firstChatId = 2147483647;
         const socket = new WebSocket('/ws/chat');
@@ -27,6 +26,41 @@
             return outerDiv;
         }
 
+        function createMediaDiv(type, src) {
+            let element;
+
+            if (type.startsWith('image')) {
+                element = document.createElement("div");
+                const image = document.createElement("img");
+                image.src = src;
+                image.alt = "image";
+            } else if (type.startsWith('audio')) {
+                const audio = document.createElement("audio");
+                audio.controls = true;
+
+                const source = document.createElement("source");
+                source.src = src;
+                source.type = "audio/" + type;
+
+                audio.appendChild(source);
+
+                element = audio;
+            } else if (type.startsWith('video')) {
+                const video = document.createElement("video");
+                video.controls = true;
+
+                const source = document.createElement("source");
+                source.src = src;
+                source.type = "video/" + message.type;
+
+                video.appendChild(source);
+
+                element = video;
+            }
+
+            return element;
+        }
+
         function uploadFile(file) {
             if (!file) { return; }
 
@@ -38,7 +72,14 @@
                 body: formData
             })
             .then(response => response.text())
-            .then(console.log)
+            .then(text => {
+                if (text.trim() === "ok") {
+                    const src = URL.createObjectURL(file);
+                    element = createMediaDiv(file.type, src);
+                    const chatsDiv = document.getElementById('chats');
+                    chatsDiv.appendChild();
+                }
+            })
             .catch(error => console.log('업로드 실패: ' + error));
         }
 
@@ -84,38 +125,10 @@
 
                     if (message.type == "") {
                         element = createTextMessageDiv(message);
-                    } else if (message.type.startsWith('image')) {
-                        element = document.createElement("div");
-
-                        const image = document.createElement("img");
-                        image.src = mediaSrc + message.id;
-                        image.alt = "이미지";
-
-                        element.appendChild(image);
-                    } else if (message.type.startsWith('audio')) {
-                        const audio = document.createElement("audio");
-                        audio.controls = true;
-
-                        const source = document.createElement("source");
-                        source.src = mediaSrc + message.id;
-                        source.type = "audio/" + message.type;
-
-                        audio.appendChild(source);
-
-                        element = audio;
-                    } else if (message.type.startsWith('video')) {
-                        const video = document.createElement("video");
-                        video.controls = true;
-
-                        const source = document.createElement("source");
-                        source.src = mediaSrc + message.id;
-                        source.type = "video/" + message.type;
-
-                        video.appendChild(source);
-
-                        element = video;
+                    } else {
+                        const src = '/media/' + chatroomId + '/' + message.id;
+                        element = createMediaDiv(message.type, src);
                     }
-
 
                     chatsDiv.prepend(element);
                 }

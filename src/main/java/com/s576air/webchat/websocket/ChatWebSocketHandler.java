@@ -116,7 +116,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         if (request.getType().equals("send")) {
             Long chatroomId = request.getChatroomId();
             if (chatroomService.containsUser(chatroomId, userId)) {
-                chatService.saveTextMessage(chatroomId, userId, request.getText());
+                chatService.saveTextChat(chatroomId, userId, request.getText());
             }
             return Optional.empty();
         } else if (request.getType().equals("load")) {
