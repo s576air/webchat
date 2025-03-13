@@ -44,7 +44,7 @@ public class ChatRepository {
             ps.setLong(4, dataChatId.get());
             ps.setTimestamp(5, time);
             return ps;
-        });
+        }, keyHolder);
 
         try {
             Long id = ((Number) keyHolder.getKeys().get("id")).longValue();
