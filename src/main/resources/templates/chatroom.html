@@ -43,7 +43,7 @@
 
                 const source = document.createElement("source");
                 source.src = src;
-                source.type = "audio/" + type;
+                source.type = type;
 
                 audio.appendChild(source);
 
@@ -54,7 +54,7 @@
 
                 const source = document.createElement("source");
                 source.src = src;
-                source.type = "video/" + message.type;
+                source.type = type;
 
                 video.appendChild(source);
 
@@ -74,14 +74,18 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text())
-            .then(text => {
-                if (text.trim() === "ok") {
-                    const src = URL.createObjectURL(file);
-                    element = createMediaDiv(file.type, src);
-                    const chatsDiv = document.getElementById('chats');
-                    chatsDiv.appendChild(element);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("status: " + response.status);
                 }
+                return response.text();
+            })
+            .then(text => {
+                firstChatId = Number(text);
+                const src = URL.createObjectURL(file);
+                element = createMediaDiv(file.type, src);
+                const chatsDiv = document.getElementById('chats');
+                chatsDiv.appendChild(element);
             })
             .catch(error => console.log('업로드 실패: ' + error));
         }

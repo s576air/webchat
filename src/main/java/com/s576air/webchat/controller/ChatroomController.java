@@ -37,6 +37,11 @@ public class ChatroomController {
         this.usersCache = usersCache;
     }
 
+    @GetMapping("chatroom")
+    public String chatroomRedirect() {
+        return "redirect:/friend-list";
+    }
+
     @PostMapping("chatroom")
     public String chatroomPage(@RequestParam("id") Long chatroomId, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -98,10 +103,10 @@ public class ChatroomController {
         Long userId = userDetails.getId();
 
         ChatData chatData = new ChatData(inputStream, contentType);
-        boolean result = chatService.saveDataChat(chatroomId, userId, chatData);
+        Optional<Long> result = chatService.saveDataChat(chatroomId, userId, chatData);
 
-        if (result) {
-            return ResponseEntity.ok("ok");
+        if (result.isPresent()) {
+            return ResponseEntity.ok(result.get().toString());
         } else {
             return ResponseEntity.badRequest().body("저장에 실패했습니다.");
         }

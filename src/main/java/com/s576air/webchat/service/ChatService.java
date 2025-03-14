@@ -50,9 +50,9 @@ public class ChatService {
             });
     }
 
-    public boolean saveDataChat(Long chatroomId, Long userId, ChatData chatData) {
+    public Optional<Long> saveDataChat(Long chatroomId, Long userId, ChatData chatData) {
         Timestamp time = new Timestamp(new Date().getTime());
-        return chatRepository.addDataChat(chatroomId, userId, chatData, time).isPresent();
+        return chatRepository.addDataChat(chatroomId, userId, chatData, time);
     }
 
     public Optional<List<Chat>> getChats(Long chatroomId, Long chatId) {
