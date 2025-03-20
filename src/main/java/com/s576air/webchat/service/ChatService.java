@@ -52,7 +52,28 @@ public class ChatService {
 
     public Optional<Long> saveDataChat(Long chatroomId, Long userId, ChatData chatData) {
         Timestamp time = new Timestamp(new Date().getTime());
-        return chatRepository.addDataChat(chatroomId, userId, chatData, time);
+        Optional<Long> chatId = chatRepository.addDataChat(chatroomId, userId, chatData, time);
+
+        if (chatId.isEmpty()) return Optional.empty();
+
+        chatroomsCache.addChatroom(chatroomId);
+        Chat chat = Chat.dataChat(chatId.get(), chatroomId, userId, chatData.getContentType(), time);
+        boolean result = chatroomsCache.addChat(chat);
+
+        if (!result) { return Optional.empty(); }
+
+        Optional<List<Long>> userIds = chatroomsCache.getUserIds(chatroomId);
+
+        if (userIds.isEmpty()) { return Optional.empty(); }
+
+        userIds.get()
+               .forEach(chatroomUserId -> {
+                   usersCache.getSession(chatroomUserId).ifPresent(session -> {
+                       ChatWebSocketHandler.sendTextChat(session, chat);
+                   });
+               });
+
+        return chatId;
     }
 
     public Optional<List<Chat>> getChats(Long chatroomId, Long chatId) {

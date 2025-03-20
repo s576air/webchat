@@ -34,6 +34,17 @@ public class Chat {
         return chat;
     }
 
+    public static Chat dataChat(Long id, Long chatroomId, Long userId, String contentType, Timestamp sentTime) {
+        Chat chat = new Chat();
+        chat.id = id;
+        chat.chatroomId = chatroomId;
+        chat.userId = userId;
+        chat.type = contentType;
+        chat.content = "";
+        chat.sentTime = sentTime;
+        return chat;
+    }
+
     public Long getId() {
         return id;
     }

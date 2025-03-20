@@ -26,8 +26,9 @@
             return outerDiv;
         }
 
-        function createMediaDiv(type, src) {
+        function createMediaDiv(message, src) {
             let element;
+            let type = message.type;
 
             if (type.startsWith('image')) {
                 element = document.createElement("div");
@@ -61,6 +62,12 @@
                 element = video;
             }
 
+            const chatInfo = document.createElement('div');
+            chatInfo.classList.add('chat-info');
+            chatInfo.textContent = '유저id: ' + message.userId + ', 시간: ' +  message.sentTime;
+
+            element.append(chatInfo);
+
             return element;
         }
 
@@ -81,11 +88,7 @@
                 return response.text();
             })
             .then(text => {
-                firstChatId = Number(text);
-                const src = URL.createObjectURL(file);
-                element = createMediaDiv(file.type, src);
-                const chatsDiv = document.getElementById('chats');
-                chatsDiv.appendChild(element);
+
             })
             .catch(error => console.log('업로드 실패: ' + error));
         }
@@ -104,20 +107,16 @@
                 const message = data.content;
                 const chatsDiv = document.getElementById('chats');
 
-                const outerDiv = document.createElement('div');
+                let element;
 
-                const chat = document.createElement('div');
-                chat.classList.add('chat');
-                chat.textContent = message.content;
+                if (message.type == "") {
+                    element = createTextMessageDiv(message);
+                } else {
+                    const src = '/media/' + chatroomId + '/' + message.id;
+                    element = createMediaDiv(message, src);
+                }
 
-                const chatInfo = document.createElement('div');
-                chatInfo.classList.add('chat-info');
-                chatInfo.textContent = '유저id: ' + message.userId + ', 시간: ' +  message.sentTime;
-
-                outerDiv.appendChild(chat);
-                outerDiv.appendChild(chatInfo);
-
-                chatsDiv.appendChild(outerDiv);
+                chatsDiv.appendChild(element);
             } else if (data.tag == "chats") {
                 const messages = data.content;
                 const chatsDiv = document.getElementById('chats');
@@ -134,7 +133,7 @@
                         element = createTextMessageDiv(message);
                     } else {
                         const src = '/media/' + chatroomId + '/' + message.id;
-                        element = createMediaDiv(message.type, src);
+                        element = createMediaDiv(message, src);
                     }
 
                     chatsDiv.prepend(element);
