@@ -1,10 +1,12 @@
 package com.s576air.webchat.websocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.s576air.webchat.domain.Chat;
 import com.s576air.webchat.domain.CustomUserDetails;
-import com.s576air.webchat.dto.MessageRequestPayload;
+import com.s576air.webchat.dto.LoadRequestPayload;
+import com.s576air.webchat.dto.SendRequestPayload;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
 import com.s576air.webchat.service.UserService;
@@ -16,6 +18,8 @@ import org.springframework.web.socket.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -102,38 +106,49 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         String payload = message.getPayload();
         System.out.println("들어온 메시지: " + payload);
 
-        MessageRequestPayload request;
+        Map<String, Object> map;
         try {
-            request = objectMapper.readValue(payload, MessageRequestPayload.class);
+            map = objectMapper.readValue(payload, new TypeReference<Map<String, Object>>() {});
         } catch (JsonProcessingException e) {
             return Optional.of(JsonUtil.errorJson("요청 해석에 실패하였습니다."));
         }
 
-        if (!chatroomService.containsUser(request.getChatroomId(), userId)) {
-            return Optional.of(JsonUtil.errorJson("채팅방에 소속되어 있지 않습니다."));
+        String type;
+        Object objectType = map.get("type");
+        if (objectType instanceof String) {
+            type = (String) objectType;
+        } else {
+            return Optional.empty();
         }
 
-        if (request.getType().equals("send")) {
-            Long chatroomId = request.getChatroomId();
-            if (chatroomService.containsUser(chatroomId, userId)) {
-                chatService.saveTextChat(chatroomId, userId, request.getText());
-            }
-            return Optional.empty();
-        } else if (request.getType().equals("load")) {
-            long id;
-            try {
-                id = Long.parseLong(request.getText());
-            } catch (NumberFormatException e) {
-                return Optional.of(JsonUtil.errorJson("숫자 해석에 실패하였습니다."));
-            }
-            Optional<List<Chat>> chats = chatService.getChats(request.getChatroomId(), id);
+        if (type.equals("send")) {
+            Optional<SendRequestPayload> optionalSendRequestPayload = SendRequestPayload.fromMap(map);
+            if (optionalSendRequestPayload.isEmpty())
+                return Optional.of(JsonUtil.errorJson("메시지 전송 요청의 형식이 잘못되었습니다."));
+            SendRequestPayload sendRequestPayload = optionalSendRequestPayload.get();
+
+            if (!chatroomService.containsUser(sendRequestPayload.getChatroomId(), userId))
+                return Optional.of(JsonUtil.errorJson("유저가 채팅방에 소속되어 있지 않습니다."));
+
+            chatService.saveTextChat(sendRequestPayload.getChatroomId(), userId, sendRequestPayload.getText());
+        } else if (type.equals("load")) {
+            Optional<LoadRequestPayload> optionalLoadRequestPayload = LoadRequestPayload.fromMap(map);
+            if (optionalLoadRequestPayload.isEmpty())
+                return Optional.of(JsonUtil.errorJson("메시지 불러오기 요청의 형식이 잘못되었습니다."));
+            LoadRequestPayload loadRequestPayload = optionalLoadRequestPayload.get();
+
+            if (!chatroomService.containsUser(loadRequestPayload.getChatroomId(), userId))
+                return Optional.of(JsonUtil.errorJson("유저가 채팅방에 소속되어 있지 않습니다."));
+
+            Optional<List<Chat>> chats = chatService.getChats(loadRequestPayload.getChatroomId(), loadRequestPayload.getId());
 
             if (chats.isPresent()) {
                 return JsonUtil.toTaggedJson("chats", chats.get());
             } else {
-                return Optional.of(JsonUtil.errorJson("채팅 내역을 가져오지 못하였습니다."));
+                return Optional.of(JsonUtil.errorJson("채팅 내역을 가져오지 못했습니다."));
             }
         }
+
         return Optional.empty();
     }
 

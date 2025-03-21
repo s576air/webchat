@@ -35,7 +35,7 @@
                 const image = document.createElement("img");
                 image.src = src;
                 image.alt = "image";
-                image.classList.add("image");
+                image.classList.add("media");
 
                 element.appendChild(image);
             } else if (type.startsWith('audio')) {
@@ -45,6 +45,7 @@
                 const source = document.createElement("source");
                 source.src = src;
                 source.type = type;
+                source.classList.add("media");
 
                 audio.appendChild(source);
 
@@ -56,6 +57,7 @@
                 const source = document.createElement("source");
                 source.src = src;
                 source.type = type;
+                source.classList.add("media");
 
                 video.appendChild(source);
 
@@ -157,7 +159,7 @@
                 const loadRequest = {
                     type: "load",
                     chatroomId: chatroomId,
-                    text: String(firstChatId)
+                    id: firstChatId
                 };
                 socket.send(JSON.stringify(loadRequest));
             });
@@ -203,7 +205,7 @@
         .chat-info {
             font-size: 12px;
         }
-        .image {
+        .media {
             max-width: 100px;
             max-height: 100px;
             width: auto;
