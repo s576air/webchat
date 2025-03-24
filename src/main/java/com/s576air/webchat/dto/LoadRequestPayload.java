@@ -11,13 +11,13 @@ public class LoadRequestPayload {
     public static Optional<LoadRequestPayload> fromMap(Map<String, Object> map) {
         LoadRequestPayload payload = new LoadRequestPayload();
         Object chatroomId = map.get("chatroomId");
-        if (!(chatroomId instanceof Long)) return Optional.empty();
+        if (!(chatroomId instanceof Number)) return Optional.empty();
 
         Object id = map.get("id");
-        if (!(id instanceof Long)) return Optional.empty();
+        if (!(id instanceof Number)) return Optional.empty();
 
-        payload.chatroomId = (Long) chatroomId;
-        payload.id = (Long) id;
+        payload.chatroomId = ((Number) chatroomId).longValue();
+        payload.id = ((Number) id).longValue();
 
         return Optional.of(payload);
     }
