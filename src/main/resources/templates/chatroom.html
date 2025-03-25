@@ -95,6 +95,23 @@
             .catch(error => console.log('업로드 실패: ' + error));
         }
 
+        function createChatroomUsersDiv(users) {
+            const outerDiv = document.createElement("div");
+            const title = document.createElement("div");
+            title.innerText = "유저 id 목록";
+
+            outerDiv.append(title);
+
+            for(let i = 0; i < users.length; i++) {
+                const userDiv = document.createElement("div");
+                userDiv.innerText = "id: " + users[i];
+
+                outerDiv.append(userDiv)
+            }
+
+            return outerDiv;
+        }
+
         socket.onopen = () => {
             console.log("WebSocket 연결됨!");
         };
@@ -140,6 +157,11 @@
 
                     chatsDiv.prepend(element);
                 }
+            } else if (data.tag == "chatroomUsers") {
+                const users = data.content;
+                const usersDiv = document.getElementById('users');
+
+                usersDiv.append(createChatroomUsersDiv(users));
             }
 
 
@@ -196,6 +218,12 @@
 
                 uploadFile(event.dataTransfer.files[0]);
             });
+
+            const chatroomUsersRequest = {
+                type: "chatroomUsers",
+                chatroomId: chatroomId
+            };
+            socket.send(JSON.stringify(chatroomUsersRequest));
         });
     </script>
     <style>
@@ -244,5 +272,7 @@
 <button onclick="uploadFile()">파일 업로드</button>
 
 <p th:text="'챗방 id: ' + ${id}"></p>
+
+<div id="users"></div>
 </body>
 </html>

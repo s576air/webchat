@@ -5,6 +5,7 @@ import com.s576air.webchat.repository.ChatroomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,5 +32,9 @@ public class ChatroomService {
 
     public Optional<String> getName(Long chatroomId) {
         return chatroomRepository.getName(chatroomId);
+    }
+
+    public List<Long> getUsers(Long chatroomId) {
+        return chatroomParticipantsRepository.findUserIdListByChatroomId(chatroomId);
     }
 }

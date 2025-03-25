@@ -130,6 +130,8 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 return Optional.of(JsonUtil.errorJson("유저가 채팅방에 소속되어 있지 않습니다."));
 
             chatService.saveTextChat(sendRequestPayload.getChatroomId(), userId, sendRequestPayload.getText());
+
+            return Optional.empty();
         } else if (type.equals("load")) {
             Optional<LoadRequestPayload> optionalLoadRequestPayload = LoadRequestPayload.fromMap(map);
             if (optionalLoadRequestPayload.isEmpty())
@@ -146,9 +148,19 @@ public class ChatWebSocketHandler implements WebSocketHandler {
             } else {
                 return Optional.of(JsonUtil.errorJson("채팅 내역을 가져오지 못했습니다."));
             }
-        }
+        } else if (type.equals("chatroomUsers")) {
+            Object objectChatroomId = map.get("chatroomId");
+            if (!(objectChatroomId instanceof Number)) return Optional.empty();
+            Long chatroomId = ((Number) objectChatroomId).longValue();
 
-        return Optional.empty();
+            if (!chatroomService.containsUser(chatroomId, userId)) return Optional.empty();
+
+            List<Long> users = chatroomService.getUsers(chatroomId);
+
+            return JsonUtil.toTaggedJson("chatroomUsers", users);
+        } else {
+            return Optional.of(JsonUtil.errorJson("요청의 형식이 잘못되었습니다."));
+        }
     }
 
     private void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
