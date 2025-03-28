@@ -155,7 +155,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
 
             if (!chatroomService.containsUser(chatroomId, userId)) return Optional.empty();
 
-            List<Long> users = chatroomService.getUsers(chatroomId);
+            Map<Long, String> users = chatroomService.getUsers(chatroomId);
 
             return JsonUtil.toTaggedJson("chatroomUsers", users);
         } else {

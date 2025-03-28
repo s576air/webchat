@@ -5,13 +5,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -70,6 +76,24 @@ public class UserRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public Map<Long, String> getIdNameMapByIds(List<Long> ids) {
+        Map<Long, String> map = new HashMap<>();
+
+        String sqlIds = "?,".repeat(ids.size());
+        sqlIds = sqlIds.substring(0, sqlIds.length() - 1);
+        String sql = "SELECT id, name FROM users WHERE id IN (" + sqlIds + ")";
+        jdbcTemplate.query(sql, new RowCallbackHandler() {
+            @Override
+            public void processRow(ResultSet rs) throws SQLException {
+                Long id = rs.getLong("id");
+                String name = rs.getString("name");
+                map.put(id, name);
+            }
+        }, ids.toArray());
+
+        return map;
     }
 
     private RowMapper<User> userRowMapper() {

@@ -102,11 +102,11 @@
 
             outerDiv.append(title);
 
-            for(let i = 0; i < users.length; i++) {
+            for (let [key, value] of Object.entries(users)) {
                 const userDiv = document.createElement("div");
-                userDiv.innerText = "id: " + users[i];
+                userDiv.innerText = "이름: " + value;
 
-                outerDiv.append(userDiv)
+                outerDiv.append(userDiv);
             }
 
             return outerDiv;
