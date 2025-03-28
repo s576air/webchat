@@ -114,6 +114,11 @@
 
         socket.onopen = () => {
             console.log("WebSocket 연결됨!");
+            const chatroomUsersRequest = {
+                type: "chatroomUsers",
+                chatroomId: chatroomId
+            };
+            socket.send(JSON.stringify(chatroomUsersRequest));
         };
 
         socket.onmessage = function(event) {
@@ -218,12 +223,6 @@
 
                 uploadFile(event.dataTransfer.files[0]);
             });
-
-            const chatroomUsersRequest = {
-                type: "chatroomUsers",
-                chatroomId: chatroomId
-            };
-            socket.send(JSON.stringify(chatroomUsersRequest));
         });
     </script>
     <style>
@@ -257,6 +256,8 @@
     </style>
 </head>
 <body>
+
+<p th:text="'채팅방 이름: ' + ${name}"></p>
 
 <button type="button" id="load">이전 메시지 가져오기</button>
 
