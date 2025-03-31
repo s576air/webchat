@@ -8,6 +8,22 @@
         const uploadUrl = '/upload/' + chatroomId;
         let firstChatId = 2147483647;
         const socket = new WebSocket('/ws/chat');
+        let userIdNameMap = new Map();
+
+        function createChatInfo(userId, time) {
+            let userInfo;
+            if (userIdNameMap.has(userId)) {
+                userInfo = '유저 이름: ' + userIdNameMap.get(userId);
+            } else {
+                userInfo = '유저 id: ' + userId;
+            }
+
+            const chatInfo = document.createElement('div');
+            chatInfo.classList.add('chat-info');
+            chatInfo.textContent = userInfo + ', 시간: ' + time;
+
+            return chatInfo;
+        }
 
         function createTextMessageDiv(message) {
             const outerDiv = document.createElement('div');
@@ -16,9 +32,7 @@
             chat.classList.add('chat');
             chat.textContent = message.content;
 
-            const chatInfo = document.createElement('div');
-            chatInfo.classList.add('chat-info');
-            chatInfo.textContent = '유저id: ' + message.userId + ', 시간: ' +  message.sentTime;
+            const chatInfo = createChatInfo(message.userId, message.sentTime);
 
             outerDiv.appendChild(chat);
             outerDiv.appendChild(chatInfo);
@@ -64,9 +78,7 @@
                 element = video;
             }
 
-            const chatInfo = document.createElement('div');
-            chatInfo.classList.add('chat-info');
-            chatInfo.textContent = '유저id: ' + message.userId + ', 시간: ' +  message.sentTime;
+            const chatInfo = createChatInfo(message.userId, message.sentTime);
 
             element.append(chatInfo);
 
@@ -102,7 +114,7 @@
 
             outerDiv.append(title);
 
-            for (let [key, value] of Object.entries(users)) {
+            for (let [key, value] of users) {
                 const userDiv = document.createElement("div");
                 userDiv.innerText = "이름: " + value;
 
@@ -164,9 +176,11 @@
                 }
             } else if (data.tag == "chatroomUsers") {
                 const users = data.content;
+                const users2 = Object.entries(users).map(([k, v]) => [Number(k), v]);
+                userIdNameMap = new Map(users2);
                 const usersDiv = document.getElementById('users');
 
-                usersDiv.append(createChatroomUsersDiv(users));
+                usersDiv.append(createChatroomUsersDiv(userIdNameMap));
             }
 
 
