@@ -13,7 +13,7 @@ public class CustomUserDetails implements UserDetails {
     private final Collection<? extends GrantedAuthority> authorities;
 
     public CustomUserDetails(Long id, String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        this.id = id;
+        this.id = id; // DB id
         this.username = username;
         this.password = password;
         this.authorities = authorities;

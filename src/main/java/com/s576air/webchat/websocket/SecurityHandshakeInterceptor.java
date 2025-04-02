@@ -20,7 +20,7 @@ public class SecurityHandshakeInterceptor implements HandshakeInterceptor {
         ServerHttpResponse response,
         WebSocketHandler wsHandler,
         Map<String, Object> attributes
-    ) throws Exception {
+    ) {
         if (request instanceof ServletServerHttpRequest) {
             HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

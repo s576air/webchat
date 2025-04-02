@@ -76,8 +76,6 @@ public class ChatWebSocketHandler implements WebSocketHandler {
                 if (returnMessage.isPresent()) {
                     session.sendMessage(new TextMessage(returnMessage.get()));
                 }
-            } else if (message instanceof BinaryMessage) {
-                handleBinaryMessage(session, (BinaryMessage) message);
             }
         }
     }
@@ -117,7 +115,7 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         if (objectType instanceof String) {
             type = (String) objectType;
         } else {
-            return Optional.empty();
+            return Optional.of(JsonUtil.errorJson("타입이 존재하지 않아 요청을 처리할 수 없습니다."));
         }
 
         if (type.equals("send")) {
@@ -161,10 +159,5 @@ public class ChatWebSocketHandler implements WebSocketHandler {
         } else {
             return Optional.of(JsonUtil.errorJson("요청의 형식이 잘못되었습니다."));
         }
-    }
-
-    private void handleBinaryMessage(WebSocketSession session, BinaryMessage message) {
-        byte[] payload = message.getPayload().array();
-        System.out.println("바이너리 메시지 길이(바이트): " + payload.length);
     }
 }

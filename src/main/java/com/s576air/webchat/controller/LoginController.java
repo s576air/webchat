@@ -34,10 +34,6 @@ public class LoginController {
         @RequestParam("password2") String password2,
         Model model
     ) {
-        if (id == null || password == null || password2 == null) {
-            model.addAttribute("err", "아이디가 올바르지 않습니다.");
-            return "sign-up";
-        }
         if (!password.equals(password2)) {
             model.addAttribute("err", "비밀번호가 다릅니다.");
             return "sign-up";
