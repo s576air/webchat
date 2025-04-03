@@ -15,6 +15,8 @@
     <label for="password2">비밀번호 재확인</label>
     <input type="text" id="password2" name="password2" required>
 
+    <input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}">
+
     <button type="submit">회원가입</button>
 </form>
 <div>

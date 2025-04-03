@@ -19,7 +19,7 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "forward:/login.html";
+        return "login";
     }
 
     @GetMapping("/sign-up")

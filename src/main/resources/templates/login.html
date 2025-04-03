@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="kr">
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
@@ -11,6 +11,8 @@
 
     <label for="password">비밀번호</label>
     <input type="text" id="password" name="password" required>
+
+    <input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}">
 
     <button type="submit">로그인</button>
 </form>

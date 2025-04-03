@@ -2,6 +2,7 @@
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}" />
     <title>Chatroom</title>
     <script>
         const chatroomId = [[${id}]];
@@ -9,6 +10,7 @@
         let firstChatId = 2147483647;
         const socket = new WebSocket('/ws/chat');
         let userIdNameMap = new Map();
+        const csrfToken = document.querySelector("meta[name='_csrf']").content;
 
         function createChatInfo(userId, time) {
             let userInfo;
@@ -93,6 +95,7 @@
 
             fetch(uploadUrl, {
                 method: 'POST',
+                headers: {'X-CSRF-TOKEN': csrfToken},
                 body: formData
             })
             .then(response => {

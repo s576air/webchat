@@ -15,6 +15,7 @@
     <td><form method="post" action="/chatroom">
         <input type="hidden" id="id" name="id" th:value="${c.id}">
         <button type="submit" th:text="'id: ' + ${c.id} + ', name: ' + ${c.name}"></button>
+        <input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}">
     </form></td>
 </tr>
 </body>
