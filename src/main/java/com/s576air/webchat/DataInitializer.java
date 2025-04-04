@@ -1,10 +1,7 @@
 package com.s576air.webchat;
 
 import com.s576air.webchat.domain.ChatData;
-import com.s576air.webchat.repository.ChatRepository;
-import com.s576air.webchat.repository.ChatroomParticipantsRepository;
-import com.s576air.webchat.repository.ChatroomRepository;
-import com.s576air.webchat.repository.UserRepository;
+import com.s576air.webchat.repository.*;
 import com.s576air.webchat.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +16,7 @@ import java.util.Date;
 @Component
 public class DataInitializer implements CommandLineRunner {
     private final UserRepository userRepository;
+    private final FriendRepository friendRepository;
     private final ChatroomRepository chatroomRepository;
     private final ChatroomParticipantsRepository chatroomParticipantsRepository;
     private final ChatRepository chatRepository;
@@ -26,11 +24,13 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     public DataInitializer(
         UserRepository userRepository,
+        FriendRepository friendRepository,
         ChatroomRepository chatroomRepository,
         ChatroomParticipantsRepository chatroomParticipantsRepository,
         ChatRepository chatRepository
     ) {
         this.userRepository = userRepository;
+        this.friendRepository = friendRepository;
         this.chatroomRepository = chatroomRepository;
         this.chatroomParticipantsRepository = chatroomParticipantsRepository;
         this.chatRepository = chatRepository;
@@ -47,6 +47,10 @@ public class DataInitializer implements CommandLineRunner {
             Long userId1 = userRepository.insertUser("test", passwordHash, "name1").orElseThrow();
             Long userId2 = userRepository.insertUser("test2", passwordHash, "name2").orElseThrow();
             Long userId3 = userRepository.insertUser("test3", passwordHash, "name3").orElseThrow();
+
+            // 친구 추가
+            friendRepository.add(userId1, userId2);
+            friendRepository.add(userId1, userId3);
 
             // 채팅방 2개 추가
             Long chatroomId1 = chatroomRepository.insert("test2와의 챗방").orElseThrow();
