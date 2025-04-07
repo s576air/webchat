@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<html lang="kr" xmlns:th="http://www.thymeleaf.org" xmlns="">
 <head>
     <meta charset="UTF-8">
     <title>Friend List</title>
 </head>
 <body>
-친구목록(미구현)
+<div id="friends"><div>친구목록</div></div>
+
 <a href="/chatroom-list">
     <button>챗방 목록으로 이동</button>
 </a>
@@ -13,4 +14,16 @@
     <button>설정</button>
 </a>
 </body>
+<script th:inline="javascript">
+    const map = [[${map}]];
+    const list = Object.entries(map);
+    list.sort((a, b) => a[1].localeCompare(b[1]));
+
+    const friends = document.getElementById('friends');
+    for (const [, name] of list) {
+        const nameDiv = document.createElement('div');
+        nameDiv.innerText(name);
+        friends.append(nameDiv);
+    }
+</script>
 </html>

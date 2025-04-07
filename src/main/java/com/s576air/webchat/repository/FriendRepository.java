@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class FriendRepository {
     private final JdbcTemplate jdbcTemplate;
@@ -33,5 +35,10 @@ public class FriendRepository {
         result = jdbcTemplate.update(sql, id, id2);
 
         return result > 0;
+    }
+
+    public List<Long> getFriendIds(Long userId) {
+        String sql = "SELECT CASE WHEN id = ? THEN id2 ELSE id END AS friend_id  FROM friends  WHERE id = ? OR id2 = ?";
+        return jdbcTemplate.queryForList(sql, Long.class, userId, userId, userId);
     }
 }

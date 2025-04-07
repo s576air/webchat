@@ -13,6 +13,8 @@ public class JsonUtil {
         disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }};
 
+    private JsonUtil() {}
+
     public static Optional<String> toJson(Object object) {
         try {
             String json = objectMapper.writeValueAsString(object);

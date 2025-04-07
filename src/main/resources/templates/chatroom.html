@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="_csrf" th:content="${_csrf.token}" />
     <title>Chatroom</title>
-    <script>
+    <script th:inline="javascript">
         const chatroomId = [[${id}]];
         const uploadUrl = '/upload/' + chatroomId;
         let firstChatId = 2147483647;
@@ -117,7 +117,7 @@
 
             outerDiv.append(title);
 
-            for (let [key, value] of users) {
+            for (const [, value] of users) {
                 const userDiv = document.createElement("div");
                 userDiv.innerText = "이름: " + value;
 
