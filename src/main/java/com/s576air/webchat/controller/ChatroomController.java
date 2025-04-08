@@ -1,17 +1,15 @@
 package com.s576air.webchat.controller;
 
 import com.s576air.webchat.domain.ChatData;
-import com.s576air.webchat.domain.CustomUserDetails;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
 import com.s576air.webchat.service.UsersCache;
+import com.s576air.webchat.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,9 +42,7 @@ public class ChatroomController {
 
     @PostMapping("chatroom")
     public String chatroomPage(@RequestParam("id") Long chatroomId, Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getId();
+        Long userId = SecurityUtil.getUserId().orElseThrow();
 
         Optional<String> chatroomName = chatroomService.getName(chatroomId);
         if (
@@ -65,9 +61,7 @@ public class ChatroomController {
 
     @GetMapping("media/{chatroomId}/{chatId}")
     public ResponseEntity<Resource> getMediaData(@PathVariable Long chatroomId, @PathVariable Long chatId) throws IOException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getId();
+        Long userId = SecurityUtil.getUserId().orElseThrow();
 
         if (!chatroomService.containsUser(chatroomId, userId)) throw new IOException();
 
@@ -98,9 +92,7 @@ public class ChatroomController {
             throw new IOException();
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        Long userId = userDetails.getId();
+        Long userId = SecurityUtil.getUserId().orElseThrow();
 
         ChatData chatData = new ChatData(inputStream, contentType);
         Optional<Long> result = chatService.saveDataChat(chatroomId, userId, chatData);

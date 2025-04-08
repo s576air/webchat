@@ -22,7 +22,7 @@
     const friends = document.getElementById('friends');
     for (const [, name] of list) {
         const nameDiv = document.createElement('div');
-        nameDiv.innerText(name);
+        nameDiv.innerText = name;
         friends.append(nameDiv);
     }
 </script>
