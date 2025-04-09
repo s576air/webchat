@@ -1,6 +1,7 @@
 package com.s576air.webchat.controller;
 
 import com.s576air.webchat.service.UserService;
+import com.s576air.webchat.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +20,11 @@ public class LoginController {
 
     @GetMapping("/login")
     public String loginPage() {
-        return "login";
+        if (SecurityUtil.isLoggedIn()) {
+            return "redirect:/friend-list";
+        } else {
+            return "login";
+        }
     }
 
     @GetMapping("/sign-up")
