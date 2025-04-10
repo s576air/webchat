@@ -6,6 +6,7 @@ import com.s576air.webchat.domain.UserCache;
 import com.s576air.webchat.repository.ChatroomParticipantsRepository;
 import com.s576air.webchat.repository.ChatroomRepository;
 import com.s576air.webchat.repository.UserRepository;
+import com.s576air.webchat.util.FriendCodeUtil;
 import com.s576air.webchat.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,8 +41,9 @@ public class UserService {
             return false;
         }
         String passwordHash = PasswordUtil.hashPassword(password);
+        String tag = FriendCodeUtil.generateTag();
 
-        return userRepository.insertUser(login_id, passwordHash, "default").isPresent();
+        return userRepository.insertUser(login_id, passwordHash, "default", tag).isPresent();
     }
 
     public List<SimpleChatroom> getSimpleChatroomList(Long userId) {

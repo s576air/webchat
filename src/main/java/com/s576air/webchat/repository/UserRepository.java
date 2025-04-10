@@ -29,8 +29,8 @@ public class UserRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Optional<Long> insertUser(String loginId, String passwordHash, String name) {
-        String sql = "INSERT INTO users (login_id, password_hash, name) VALUES (?, ?, ?)";
+    public Optional<Long> insertUser(String loginId, String passwordHash, String name, String tag) {
+        String sql = "INSERT INTO users (login_id, password_hash, name, friend_code_tag) VALUES (?, ?, ?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {
@@ -38,6 +38,7 @@ public class UserRepository {
             ps.setString(1, loginId);
             ps.setString(2, passwordHash);
             ps.setString(3, name);
+            ps.setString(4, tag);
             return ps;
         }, keyHolder);
 
@@ -108,5 +109,16 @@ public class UserRepository {
     void clear() {
         String sql = "DELETE FROM users";
         jdbcTemplate.update(sql);
+    }
+
+    public Optional<String> getFriendCodeTag(Long userId) {
+        String sql = "SELECT friend_code_tag FROM users WHERE id = ?";
+        try {
+            String tag = jdbcTemplate.queryForObject(sql, String.class, userId);
+            return Optional.ofNullable(tag);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+
     }
 }

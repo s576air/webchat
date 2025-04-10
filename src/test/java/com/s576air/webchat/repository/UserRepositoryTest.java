@@ -2,6 +2,7 @@ package com.s576air.webchat.repository;
 
 
 import com.s576air.webchat.domain.User;
+import com.s576air.webchat.util.FriendCodeUtil;
 import com.s576air.webchat.util.PasswordUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,8 +48,8 @@ public class UserRepositoryTest {
         Optional<User> nullUser1 = repository.findByLoginId(user1.getLoginId());
         Assertions.assertEquals(Optional.empty(), nullUser1);
 
-        repository.insertUser("first", PasswordUtil.hashPassword("hashcode"), "name");
-        repository.insertUser("second", PasswordUtil.hashPassword("password"), "java");
+        repository.insertUser("first", PasswordUtil.hashPassword("hashcode"), "name", FriendCodeUtil.generateTag());
+        repository.insertUser("second", PasswordUtil.hashPassword("password"), "java", FriendCodeUtil.generateTag());
 
         Optional<User> repositoryUser1 = repository.findByLoginId(user1.getLoginId());
         Assertions.assertEquals(Optional.of(user1), repositoryUser1);

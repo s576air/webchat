@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     login_id VARCHAR(255) UNIQUE,
     password_hash VARCHAR(255),
-    name VARCHAR(255)
+    name VARCHAR(255),
+    friend_code_tag CHAR(8)
 );
 
 CREATE TABLE IF NOT EXISTS friends (

@@ -2,6 +2,7 @@ package com.s576air.webchat;
 
 import com.s576air.webchat.domain.ChatData;
 import com.s576air.webchat.repository.*;
+import com.s576air.webchat.util.FriendCodeUtil;
 import com.s576air.webchat.util.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -44,9 +45,9 @@ public class DataInitializer implements CommandLineRunner {
             String passwordHash = PasswordUtil.hashPassword("password");
 
             // 계정 3개 추가
-            Long userId1 = userRepository.insertUser("test", passwordHash, "name1").orElseThrow();
-            Long userId2 = userRepository.insertUser("test2", passwordHash, "name2").orElseThrow();
-            Long userId3 = userRepository.insertUser("test3", passwordHash, "name3").orElseThrow();
+            Long userId1 = userRepository.insertUser("test", passwordHash, "name1", FriendCodeUtil.generateTag()).orElseThrow();
+            Long userId2 = userRepository.insertUser("test2", passwordHash, "name2", FriendCodeUtil.generateTag()).orElseThrow();
+            Long userId3 = userRepository.insertUser("test3", passwordHash, "name3", FriendCodeUtil.generateTag()).orElseThrow();
 
             // 친구 추가
             friendRepository.add(userId1, userId2);

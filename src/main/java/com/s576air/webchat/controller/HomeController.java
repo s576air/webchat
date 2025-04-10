@@ -33,8 +33,10 @@ public class HomeController {
         Long userId = SecurityUtil.getUserId().orElseThrow();
 
         Map<Long, String> friendsIdNameMap = friendService.getFriendsIdNameMap(userId);
+        String code = friendService.getFriendCode(userId).orElse("");
 
         model.addAttribute("map", friendsIdNameMap);
+        model.addAttribute("friendCode", code);
 
         return "friend-list";
     }
