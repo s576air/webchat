@@ -7,6 +7,14 @@
 <body>
 <p th:text="'내 친구 코드: ' + ${friendCode}"></p>
 
+<form method="post" action="/addFriend">
+    <label for="code">친구코드</label>
+    <input type="text" id="code" name="code">
+
+    <input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}">
+
+    <button type="submit">친구 추가</button>
+</form>
 <div id="friends"><div>친구목록</div></div>
 
 <a href="/chatroom-list">

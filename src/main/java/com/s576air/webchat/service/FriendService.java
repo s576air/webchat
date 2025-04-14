@@ -12,8 +12,8 @@ import java.util.Optional;
 
 @Service
 public class FriendService {
-    UserRepository userRepository;
-    FriendRepository friendRepository;
+    private final UserRepository userRepository;
+    private final FriendRepository friendRepository;
 
     @Autowired
     public FriendService(UserRepository userRepository, FriendRepository friendRepository) {
@@ -32,5 +32,12 @@ public class FriendService {
 
         String encodedId = FriendCodeUtil.encodeId(userId);
         return Optional.of(encodedId + tag.get());
+    }
+
+    public void addFriend(long selfId, long friendId, String friendTag) {
+        Optional<String> friendTag2 = userRepository.getFriendCodeTag(friendId);
+        if (friendTag2.isPresent() && friendTag2.get().equals(friendTag)) {
+            friendRepository.add(selfId, friendId);
+        }
     }
 }

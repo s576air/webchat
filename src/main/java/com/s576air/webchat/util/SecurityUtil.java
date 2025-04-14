@@ -21,7 +21,11 @@ public class SecurityUtil {
     public static Optional<Long> getUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
+        if (
+            authentication == null ||
+            !authentication.isAuthenticated() ||
+            authentication instanceof AnonymousAuthenticationToken
+        ) {
             return Optional.empty();
         }
 
