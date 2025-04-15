@@ -42,6 +42,7 @@ public class ChatroomController {
 
     @PostMapping("chatroom")
     public String chatroomPage(@RequestParam("id") Long chatroomId, Model model) {
+        if (chatroomId == null) return "forward:/chatroom-not-found.html";
         Long userId = SecurityUtil.getUserId().orElseThrow();
 
         Optional<String> chatroomName = chatroomService.getName(chatroomId);
@@ -80,8 +81,8 @@ public class ChatroomController {
 
     @PostMapping("upload/{chatroomId}")
     public ResponseEntity<String> upload(@PathVariable Long chatroomId, @RequestParam("file") MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            return ResponseEntity.badRequest().body("파일이 비어있습니다.");
+        if (file == null || file.isEmpty()) {
+            return ResponseEntity.badRequest().body("잘못된 파일입니다.");
         }
 
         String contentType = file.getContentType();

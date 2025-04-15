@@ -6,6 +6,7 @@ import com.s576air.webchat.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Optional;
 
@@ -31,8 +32,10 @@ public class FriendController {
     }
 
     @PostMapping("addFriend")
-    public String addFriend(String friendCode) {
-        addFriendInner(friendCode);
+    public String addFriend(@RequestParam("code") String friendCode) {
+        if (friendCode != null) {
+            addFriendInner(friendCode);
+        }
         return "redirect:/friend-list";
     }
 
