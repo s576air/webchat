@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="kr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatroom Add</title>
+</head>
+<body>
+<div>새 채팅방을 개설합니다. 추가할 유저를 선택해 주세요.</div>
+<form method="post" action="/login">
+    <div th:each="entry: ${map}">
+        <label>
+            <input type="checkbox" name="id" value="${entry.key}">
+            <span th:text="${entry.value}"></span>
+        </label>
+    </div>
+
+    <input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}">
+
+    <button type="submit">추가하기(현재 작동하지 않음)</button>
+</form>
+</body>
+</html>

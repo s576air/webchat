@@ -3,6 +3,7 @@ package com.s576air.webchat.controller;
 import com.s576air.webchat.domain.ChatData;
 import com.s576air.webchat.service.ChatService;
 import com.s576air.webchat.service.ChatroomService;
+import com.s576air.webchat.service.FriendService;
 import com.s576air.webchat.service.UsersCache;
 import com.s576air.webchat.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +21,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
 public class ChatroomController {
     private final ChatroomService chatroomService;
     private final ChatService chatService;
+    private final FriendService friendService;
     private final UsersCache usersCache;
 
     @Autowired
-    public ChatroomController(ChatroomService chatroomService, ChatService chatService, UsersCache usersCache) {
+    public ChatroomController(ChatroomService chatroomService, ChatService chatService, UsersCache usersCache, FriendService friendService) {
         this.chatroomService = chatroomService;
         this.chatService = chatService;
+        this.friendService = friendService;
         this.usersCache = usersCache;
     }
 
@@ -103,5 +107,16 @@ public class ChatroomController {
         } else {
             return ResponseEntity.badRequest().body("저장에 실패했습니다.");
         }
+    }
+
+    @GetMapping("chatroom-add")
+    public String addChatroom(Model model) {
+        Long userId = SecurityUtil.getUserId().orElseThrow();
+
+        Map<Long, String> friendsIdNameMap = friendService.getFriendsIdNameMap(userId);
+
+        model.addAttribute("map", friendsIdNameMap);
+
+        return "chatroom-add";
     }
 }
