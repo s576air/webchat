@@ -21,6 +21,10 @@ public class FriendService {
         this.userRepository = userRepository;
     }
 
+    public List<Long> getFriendIds(Long userId) {
+        return friendRepository.getFriendIds(userId);
+    }
+
     public Map<Long, String> getFriendsIdNameMap(Long userId) {
         List<Long> friendIds = friendRepository.getFriendIds(userId);
         return userRepository.getIdNameMapByIds(friendIds);

@@ -30,6 +30,16 @@ public class ChatroomService {
         this.usersCache = usersCache;
     }
 
+    public boolean insert(String name, List<Long> ids) {
+        Optional<Long> optionalChatroomId = chatroomRepository.insert(name);
+        if (optionalChatroomId.isEmpty()) return false;
+        Long chatroomId = optionalChatroomId.get();
+        for (Long id: ids) { System.out.println("개별:" + id);
+            chatroomParticipantsRepository.insert(chatroomId, id);
+        }
+        return true;
+    }
+
     public boolean containsUser(Long chatroomId, Long userId) {
         Optional<Boolean> userInChatroom = usersCache.isUserInChatroom(chatroomId, userId);
         return userInChatroom.orElseGet(() -> chatroomParticipantsRepository.isUserInChatroom(chatroomId, userId));

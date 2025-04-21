@@ -5,11 +5,14 @@
     <title>Chatroom Add</title>
 </head>
 <body>
-<div>새 채팅방을 개설합니다. 추가할 유저를 선택해 주세요.</div>
-<form method="post" action="/login">
+<div>새 채팅방을 개설합니다. 채팅방 이름과 추가할 유저를 선택해 주세요.</div>
+<form method="post" action="/make-chatroom">
+    <label for="name">채팅방 이름</label>
+    <input type="text" id="name" name="name">
+
     <div th:each="entry: ${map}">
         <label>
-            <input type="checkbox" name="id" value="${entry.key}">
+            <input type="checkbox" name="id" th:value="${entry.key}">
             <span th:text="${entry.value}"></span>
         </label>
     </div>

@@ -21,8 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class ChatroomController {
@@ -118,5 +117,25 @@ public class ChatroomController {
         model.addAttribute("map", friendsIdNameMap);
 
         return "chatroom-add";
+    }
+
+    @PostMapping("make-chatroom")
+    public String makeChatroom(@RequestParam("name") String name, @RequestParam("id") List<Long> ids) {
+        if (name == null || ids == null) return "redirect:/chatroom-list";
+
+        Long userId = SecurityUtil.getUserId().orElseThrow();
+
+        Set<Long> friendIds = new HashSet<>(friendService.getFriendIds(userId));
+
+        for (Long id: ids) {
+            if (!friendIds.contains(id)) {
+                return "redirect:/chatroom-list";
+            }
+        }
+        ids.add(userId);
+
+        chatroomService.insert(name, ids);
+
+        return "redirect:/chatroom-list";
     }
 }
