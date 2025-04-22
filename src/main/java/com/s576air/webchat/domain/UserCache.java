@@ -23,6 +23,10 @@ public class UserCache {
         this.session = session;
     }
 
+    public void addChatroomId(Long chatroomId) {
+        chatroomIds.add(chatroomId);
+    }
+
     public List<Long> getChatroomIds() {
         return new ArrayList<>(chatroomIds);
     }

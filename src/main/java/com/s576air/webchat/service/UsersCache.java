@@ -40,6 +40,16 @@ public class UsersCache {
         });
     }
 
+    public void addUserChatroomId(Long userId, Long chatroomId) {
+        cache.compute(userId, (key, value) -> {
+            if (value != null) {
+                value.addChatroomId(chatroomId);
+            }
+
+            return value;
+        });
+    }
+
     public Optional<List<Long>> getChatroomIdsByUserId(Long userId) {
         UserCache userCache = cache.get(userId);
         if (userCache == null) {

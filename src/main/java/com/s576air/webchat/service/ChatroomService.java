@@ -34,8 +34,9 @@ public class ChatroomService {
         Optional<Long> optionalChatroomId = chatroomRepository.insert(name);
         if (optionalChatroomId.isEmpty()) return false;
         Long chatroomId = optionalChatroomId.get();
-        for (Long id: ids) { System.out.println("개별:" + id);
+        for (Long id: ids) {
             chatroomParticipantsRepository.insert(chatroomId, id);
+            usersCache.addUserChatroomId(id, chatroomId);
         }
         return true;
     }
