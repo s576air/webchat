@@ -2,22 +2,81 @@
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .top-var {
+            height: 10vh;
+            background-color: aqua;
+            display: flex;
+            align-items: center;
+            padding-left: 3vw;
+            color: white;
+            font-size: 7vh;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            margin-left: 35vw;
+            margin-top: 30vh;
+            width: 37vw;
+            height: 15vh;
+        }
+        .login-container {
+            display: flex;
+            width: 32vw;
+            height: 12vh;
+        }
+        .inputs {
+            flex-direction: column;
+        }
+        .input {
+            margin: 1px;
+            width: 24vw;
+            height: 5.5vh;
+            font-size: 3vh;
+        }
+        .login {
+            margin: 1px;
+            width: 12vw;
+            height: 12vh;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            clip-path: polygon(0 0, 0 0, 0 0);
+            border: 0;
+        }
+        .link {
+            margin-top: 1vh;
+        }
+    </style>
     <title>Login</title>
 </head>
 <body>
+<div class="top-var">WebTalk</div>
+<div class="container">
 <form method="post" action="/login">
-    <label for="id">아이디</label>
-    <input type="text" id="id" name="username" required>
-
-    <label for="password">비밀번호</label>
-    <input type="text" id="password" name="password" required>
-
+    <div class="login-container">
+        <div class = "inputs">
+            <label for="id" class="sr-only">아이디</label>
+            <input class="input" type="text" id="id" name="username" placeholder=" 아이디" required>
+            <label for="password" class="sr-only">비밀번호</label>
+            <input class="input" type="text" id="password" name="password" placeholder=" 비밀번호" required>
+        </div>
+        <button class="login" type="submit">로그인</button>
+    </div>
     <input type="hidden" id="_csrf" name="_csrf" th:value="${_csrf.token}">
-
-    <button type="submit">로그인</button>
 </form>
-<a href="/sign-up">
-    <button>회원가입</button>
-</a>
+<a href="/sign-up" class="link">회원가입</a>
+</div>
 </body>
 </html>
