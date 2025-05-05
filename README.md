@@ -11,7 +11,7 @@
 1. db는 h2 database를 사용하며 메모리 모드이기 때문에, 서버를 종료하면 기록된 내용도 사라집니다.
 2. 서버를 중점적으로 만들었기 때문에, 프론트엔드가 미흡합니다.
 3. 테스트용 아이디는 다음과 같습니다.
-id: test, password: password
-id: test2, password: password
-id: test3, password: password
+
+- id: test, test2, test3
+- password: (공통) password
 참고 링크: https://github.com/s576air/webchat/blob/main/src/main/java/com/s576air/webchat/DataInitializer.java
