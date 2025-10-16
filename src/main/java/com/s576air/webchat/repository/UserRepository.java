@@ -80,6 +80,7 @@ public class UserRepository {
     }
 
     public Map<Long, String> getIdNameMapByIds(List<Long> ids) {
+        if (ids.size() == 0) return Map.of();
         Map<Long, String> map = new HashMap<>();
 
         String sqlIds = "?,".repeat(ids.size());
